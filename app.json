@@ -20,7 +20,7 @@
     },
     "web": {
       "bundler": "metro",
-      "output": "static",
+      "output": "single",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
@@ -36,7 +36,15 @@
       ]
     ],
     "experiments": {
-      "typedRoutes": true
-    }
+      "typedRoutes": true,
+	  "reactServerFunctions": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "e0cf63eb-89a0-4b15-85a1-b926542fe619"
+      }
+    },
+    "owner": "greencatted"
   }
 }
