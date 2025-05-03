@@ -1,14 +1,13 @@
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
+	Button,
+	KeyboardAvoidingView,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TextInput,
+	View
 } from "react-native";
 
 type FormData = {
@@ -33,7 +32,6 @@ export default function Profile() {
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
         style={styles.keyboardView}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
           <Text style={styles.title}>Profile</Text>
@@ -120,9 +118,9 @@ export default function Profile() {
         </ScrollView>
       </KeyboardAvoidingView>
 	  
-	  <ScrollView>
+	  {/* <ScrollView> */}
 	 	{/* Add events here */}
-	  </ScrollView>
+	  {/* </ScrollView> */}
     </SafeAreaView>
   );
 }
