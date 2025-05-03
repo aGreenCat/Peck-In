@@ -48,6 +48,8 @@ export default function Scan() {
 			onBarcodeScanned={({ data }) => {
 				setScanned(true);
 				setDisplayText(data);
+
+				
 			}}
 			barcodeScannerSettings={{
 				barcodeTypes: ['qr'],
