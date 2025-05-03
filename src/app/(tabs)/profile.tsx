@@ -1,14 +1,14 @@
 import { Controller, useForm } from "react-hook-form";
 import {
-	Button,
-	KeyboardAvoidingView,
-	Platform,
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TextInput,
-	View,
+  Button,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 
 type FormData = {

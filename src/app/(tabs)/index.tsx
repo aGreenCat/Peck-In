@@ -1,7 +1,8 @@
+'use client';
 import React from 'react';
-import { ActivityIndicator, SafeAreaView, StyleSheet, Text } from 'react-native';
+import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
 
-import renderInfo from '@/actions/render-info';
+import Scan from './scan';
 
 export default function Index() {
   return (
@@ -11,13 +12,13 @@ export default function Index() {
 				// The view that will render while the Server Function is awaiting data.
 				<ActivityIndicator />
 			}>
-			{renderInfo({ name: 'World' })}
+			{/* {renderInfo({ name: 'World' })} */}
 		</React.Suspense>
 
 		{/* The above is proof of concept for server actions*/}
 
 		{/* we will show ur qr here*/}
-		<Text>QR</Text>
+		<Scan />
 	</SafeAreaView>
   );
 }
