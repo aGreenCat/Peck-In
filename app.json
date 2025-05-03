@@ -33,11 +33,12 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      "expo-barcode-scanner"
     ],
     "experiments": {
       "typedRoutes": true,
-	  "reactServerFunctions": true
+      "reactServerFunctions": true
     },
     "extra": {
       "router": {},
