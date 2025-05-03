@@ -50,7 +50,7 @@ export default function Scan() {
 				setDisplayText(data);
 			}}
 			barcodeScannerSettings={{
-				barCodeTypes: ['qr'],
+				barcodeTypes: ['qr'],
 			}}
 			active={!scanned}
 		>
