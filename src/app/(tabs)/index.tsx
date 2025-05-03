@@ -1,8 +1,6 @@
+import renderInfo from '@/actions/render-info';
 import React from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet, Text } from 'react-native';
-
-import renderInfo from '@/actions/render-info';
-
 export default function Index() {
   return (
 	<SafeAreaView style={styles.container}>
@@ -21,7 +19,10 @@ export default function Index() {
 	</SafeAreaView>
   );
 }
-
+const DB = require('@/actions/databasing');
+console.log(DB);
+//console.log(DB.storing());
+console.log(DB.reading());
 const styles = StyleSheet.create({
   container: {
 	flex: 1,
