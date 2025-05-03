@@ -52,19 +52,19 @@ export type Database = {
       Students: {
         Row: {
           Email: string | null
-          EmplID: number | null
+          EmplID: string | null
           id: number
           Name: string | null
         }
         Insert: {
           Email?: string | null
-          EmplID?: number | null
+          EmplID?: string | null
           id?: number
           Name?: string | null
         }
         Update: {
           Email?: string | null
-          EmplID?: number | null
+          EmplID?: string | null
           id?: number
           Name?: string | null
         }

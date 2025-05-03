@@ -22,7 +22,7 @@ export default function Index() {
 const DB = require('@/actions/databasing');
 console.log(DB);
 //console.log(DB.storing());
-console.log(DB.reading());
+//console.log(DB.reading());
 const styles = StyleSheet.create({
   container: {
 	flex: 1,
