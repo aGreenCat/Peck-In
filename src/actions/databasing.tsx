@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient("https://wmjlyconmvfxepmvuibl.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indtamx5Y29ubXZmeGVwbXZ1aWJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyMjEwNzgsImV4cCI6MjA2MTc5NzA3OH0.BXrCEVgQK2gtLaYNbLHrX48-uG9BQqakVVQaA3nSqKs")
+const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_KEY!);
  /*
 async function storing() {
     console.log("A")
