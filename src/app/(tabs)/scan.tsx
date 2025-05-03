@@ -1,10 +1,10 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text } from 'react-native';
 
 export default function Scan() {
   return (
-	<View style={styles.container}>
+	<SafeAreaView style={styles.container}>
 		<Text>Scan</Text>
-	</View>
+	</SafeAreaView>
   );
 }
 
@@ -13,5 +13,6 @@ const styles = StyleSheet.create({
 	flex: 1,
 	justifyContent: 'center',
 	alignItems: 'center',
+	backgroundColor: '#fff',
   },
 });
