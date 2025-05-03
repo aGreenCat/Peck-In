@@ -1,6 +1,6 @@
-'use client';
 import React from 'react';
 import { ActivityIndicator, SafeAreaView, StyleSheet } from 'react-native';
+'use client';
 
 import Scan from './scan';
 
@@ -22,7 +22,6 @@ export default function Index() {
 	</SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
 	flex: 1,

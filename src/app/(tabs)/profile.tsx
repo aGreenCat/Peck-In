@@ -1,3 +1,4 @@
+import { storeUser } from '@/actions/databasing';
 import { Controller, useForm } from "react-hook-form";
 import {
 	Button,
@@ -26,6 +27,11 @@ export default function Profile() {
 
   const onSubmit = (data: FormData) => {
     console.log(data);
+    storeUser({
+      name: (data.firstName + " " + data.lastName), 
+      emplid: data.emplid, 
+      email: data.email
+    } );
   };
 
   return (
