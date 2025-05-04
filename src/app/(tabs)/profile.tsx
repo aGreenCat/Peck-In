@@ -48,7 +48,7 @@ export default function Profile() {
 	if (error) {
 	  console.error("Error storing user:", error);
 	  // TODO: Handle error (e.g., show a message to the user)
-	  setError(error as string);
+	  setError(error as unknown as string);
 	  setLoading(false);
 	  return;
 	}

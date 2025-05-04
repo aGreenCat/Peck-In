@@ -1,3 +1,5 @@
+'use client';
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
