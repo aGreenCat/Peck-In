@@ -1,9 +1,12 @@
 'use client';
 
+import { User } from '@/contexts/userContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { getAttendees } from '@/actions/databasing';
+import AttendeesDisplay from './AttendeesDisplay';
 import QRCodeDisplay from './QRCodeDisplay';
 
 export type EventProps = {
@@ -19,11 +22,31 @@ export type EventProps = {
 
 const Event: React.FC<EventProps> = ({ id, name, description, location, host, start_time, end_time, noqr=false }) => {
   const [showDetails, setShowDetails] = React.useState(false);
+
+  const [showAttendees, setShowAttendees] = React.useState(false);
+  const [attendees, setAttendees] = React.useState<User[]>([]);
+
+  useEffect(() => {
+	const fetchAttendees = async () => {
+	  const raw_attendees = await getAttendees({EventID: id});
+	  const attendees = raw_attendees?.map((attendee) => {
+		return {
+		  name: attendee.Name!,
+		  emplid: attendee.EmplID!,
+		  email: attendee.Email!,
+		}
+	  });
+	  setAttendees(attendees!);
+	};
+
+	if (!noqr)
+		fetchAttendees();
+  }, []);
   
   return (
 	<>
 		<View style={styles.container}>
-			<Text style={styles.greeting}>{name}</Text>
+			<Text style={styles.greeting}>{name + ((!noqr && attendees) ? ` (${attendees.length})` : '')}</Text>
 			<TouchableOpacity onPress={() => setShowDetails(!showDetails)} style={styles.smallButton}>
 				<Ionicons name={`chevron-${showDetails ? 'back' : 'down'}`} size={24} color="white" />
 			</TouchableOpacity>
@@ -56,10 +79,21 @@ const Event: React.FC<EventProps> = ({ id, name, description, location, host, st
 				}
 
 
-				{!noqr && <QRCodeDisplay 
-					eventId={id} 
-					eventName={name} 
-				/>}
+				{!noqr && (
+					<>
+						{showAttendees 
+						? <AttendeesDisplay attendees={attendees} />
+						: <QRCodeDisplay 
+							eventId={id} 
+							eventName={name} 
+						/>}
+
+						<Button 
+							title="View Attendance"
+							onPress={() => setShowAttendees(!showAttendees)}
+						/>
+					</>
+				)}
 			</View>
 		}
 	</>
@@ -93,3 +127,7 @@ const styles = StyleSheet.create({
 });
 
 export default Event;
+
+function onEffect(arg0: () => void) {
+	throw new Error('Function not implemented.');
+}
