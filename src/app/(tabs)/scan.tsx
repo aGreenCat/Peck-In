@@ -1,4 +1,5 @@
 'use client';
+import { storeAttendance } from '@/actions/databasing';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -49,6 +50,7 @@ export default function Scan() {
 				if (!isNaN(eventId)) {
 					setDisplayText(data);
 				  	{/*Process check-in using the numeric ID*/}
+					storeAttendance({EventID: Number(data), EmplID: 'a'}); // replace 'a' with global thing
 				  	setScanned(true);
 				}
 			}}	
