@@ -1,21 +1,24 @@
 import { storeUser } from '@/actions/databasing';
+import { userContext, UserContextType } from '@/contexts/userContext';
+import * as SecureStore from 'expo-secure-store';
+import { useContext, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
 import {
-  Button,
-  KeyboardAvoidingView,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View
+	Button,
+	KeyboardAvoidingView,
+	SafeAreaView,
+	ScrollView,
+	StyleSheet,
+	Text,
+	TextInput,
+	View
 } from "react-native";
 
 type FormData = {
-  firstName: string;
-  lastName: string;
-  emplid: string;
-  email: string;
+	firstName: string;
+  	lastName: string;
+  	emplid: string;
+  	email: string;
 };
 
 export default function Profile() {
@@ -25,13 +28,45 @@ export default function Profile() {
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const context = useContext<UserContextType>(userContext);
+  const user = context?.user || null;
+  const setUser = context?.setUser!;
+
+  const onSubmit = async (data: FormData) => {
     console.log(data);
-    storeUser({
+	setLoading(true);
+	
+    let { error } = await storeUser({
       name: (data.firstName + " " + data.lastName), 
       emplid: data.emplid, 
       email: data.email
-    } );
+    });
+
+	if (error) {
+	  console.error("Error storing user:", error);
+	  // TODO: Handle error (e.g., show a message to the user)
+	  setError(error as string);
+	  setLoading(false);
+	  return;
+	}
+	
+	await SecureStore.setItemAsync('name', data.firstName + " " + data.lastName);
+	await SecureStore.setItemAsync('emplid', data.emplid);
+	await SecureStore.setItemAsync('email', data.email);
+	console.log("User stored successfully");
+
+	// TODO: actually set the user context!
+	setUser({
+		name: data.firstName + " " + data.lastName,
+		emplid: data.emplid,
+		email: data.email,
+	});
+
+	setLoading(false);
+	setError(null);
   };
 
   return (
@@ -41,7 +76,18 @@ export default function Profile() {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer} keyboardShouldPersistTaps="handled">
           <Text style={styles.title}>Profile</Text>
+		  {user && 
+		  	<Text style={{ fontWeight: 'bold', textAlign: 'center', marginBottom: 24, }}>Welcome, {user?.name}.</Text>
+		  }
 
+		  {user 
+		  ? 
+		  <>
+		  <Text>EMPLID: {user.emplid}</Text>
+		  <Text>Email: {user.email}</Text>
+		  </>
+		  :
+		  <>
           <Controller
             control={control}
             name="firstName"
@@ -117,10 +163,34 @@ export default function Profile() {
             )}
           />
           {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
+		  {error && <Text style={styles.error}>{error}</Text>}
+		  
+		  </>
+		  }
 
-          <View style={styles.buttonContainer}>
-            <Button title="Save" onPress={handleSubmit(onSubmit)} />
+		  {user
+		  ?
+		  <View style={styles.buttonContainer}>
+			<Button color='gray' title="Change User" onPress={async () => {
+				// TODO: remove from supabase
+
+				await SecureStore.deleteItemAsync('name');
+				await SecureStore.deleteItemAsync('emplid');
+				await SecureStore.deleteItemAsync('email');
+
+				setUser(null);
+
+				console.log("User deleted successfully");
+			}} />
+		  </View>
+		  :
+		  <View style={styles.buttonContainer}>
+            {loading 
+			?	<Button title="Saving..." onPress={handleSubmit(onSubmit)} />
+			:	<Button title="Save" onPress={handleSubmit(onSubmit)} />
+			}
           </View>
+		  }
         </ScrollView>
       </KeyboardAvoidingView>
 	  
@@ -147,7 +217,6 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "600",
     textAlign: "center",
-    marginBottom: 24,
   },
   input: {
     borderWidth: 1,

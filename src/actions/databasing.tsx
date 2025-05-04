@@ -11,26 +11,28 @@ async function storing() {
     console.log(error);
 }
     */
-
 export async function storeUser({name, emplid, email} : { name: string, emplid: string, email: string}) {
     const check = await getUser({EmplID: emplid});
     if (check == null || check!.length > 0){
-        console.log(check);
-        //case of duplicate user. Do as you want
+		return { error: "User already exists" };
     }
     else{
         const {error} = await supabase.from('Students').insert([{Name: name, EmplID: emplid, Email: email}]);
         if (error){
-            console.log(error); //Placeholder?
+            return { error: error };
         }
     }
+
+	return {};
 }
 
 export async function storeEvent({EventName, EmplID} : {EventName: string, EmplID: string}){
-    const {error} = await supabase.from('Events').insert([{'EventName': EventName, 'EmplID': EmplID}]);
+    const {error} = await supabase.from('Events').insert([{'EventName': EventName, 'EmplID': EmplID}]).single();
     if (error){
-        console.log(error); //Placeholder?
+        return { error: error };
     }
+
+	return {};
 }
 /*
 export async function storeClub({clubname, clubleader} : {clubname: string, clubleader: string}){
