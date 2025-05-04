@@ -1,6 +1,7 @@
+import { Database } from '@/actions/supabase';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient(process.env.EXPO_PUBLIC_SUPABASE_URL as string, process.env.EXPO_PUBLIC_SUPABASE_KEY as string);
+const supabase = createClient<Database>(process.env.EXPO_PUBLIC_SUPABASE_URL as string, process.env.EXPO_PUBLIC_SUPABASE_KEY as string);
  /*
 async function storing() {
     console.log("A")
@@ -10,6 +11,7 @@ async function storing() {
     console.log(error);
 }
     */
+
 export async function storeUser({name, emplid, email} : { name: string, emplid: string, email: string}) {
     const check = await getUser({EmplID: emplid});
     if (check == null || check!.length > 0){
@@ -36,7 +38,7 @@ export async function storeClub({clubname, clubleader} : {clubname: string, club
 }
 */
 export async function storeAttendance({EventID, EmplID} : {EventID: number, EmplID: string}){
-    const {error} = await supabase.from('EventAttendace').insert([{'EventID': EventID, 'EmplID': EmplID}]);
+    const {error} = await supabase.from('EventAttendance').insert([{'EventID': EventID, 'EmplID': EmplID}]);
     if (error){
         console.log(error);
     }
@@ -48,27 +50,34 @@ export async function getUser({EmplID} : {EmplID: string}){
 }
 
 export async function getEvent({EventID} : {EventID: number}){
-    const {data, error} = await supabase.from('Events').select().eq('EventID', EventID).limit(1);
+    const {data, error} = await supabase.from('Events').select('EventName').eq('EventID', EventID).limit(1);
     return data;
 }
 
-export async function getEventsAttended({Emplid} : {Emplid: string}){
-    const {data, error} = await supabase.from('EventAttendance').select('EventID').eq('EmplID', Emplid);
+export async function getEventsAttended({EmplID} : {EmplID: string}){
+    const obj = await supabase.from('EventAttendance').select('EventID').eq('EmplID', EmplID);
     //console.log(emplid);
-    //console.log(data);
-    let i = 0;
-    while( i < data!.length){
-        console.log(await getEvent( data![i]));
-        i+= 1;
+    //console.log(obj.data);
+    //console.log(obj.data![0].EventID);
+    let ids = [];
+    for (let i = 0; i < obj.data!.length; i++){
+        ids.push(obj.data![i].EventID);
     }
+    console.log(ids);
+    const events = await supabase.from('Events').select('EventName').in('EventID', ids);
+    return (events.data);
+     
 }
 
 export async function getAttendees({EventID}: {EventID: number}){
-    const {data, error} = await supabase.from('EventAttendance').select('EmplID').eq('EventID', EventID);
+    const obj = await supabase.from('EventAttendance').select('EmplID').eq('EventID', EventID);
     let i = 0;
-    while( i< data!.length){
-        console.log(await getUser(data![i]));
+    let attenders = [];
+    for (let i = 0; i < obj.data!.length; i++){
+        attenders.push(obj.data![i].EmplID);
     }
+    const people = await supabase.from('Students').select().in('EmplID', attenders);
+    return (people.data);
 }
 /*
 async function reading(){
