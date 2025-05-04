@@ -1,14 +1,14 @@
 import { storeUser } from '@/actions/databasing';
 import { Controller, useForm } from "react-hook-form";
 import {
-	Button,
-	KeyboardAvoidingView,
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TextInput,
-	View
+  Button,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View
 } from "react-native";
 
 type FormData = {
@@ -156,6 +156,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginBottom: 10,
     fontSize: 16,
+    color: "#333",
   },
   error: {
     color: "red",
@@ -163,5 +164,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     marginTop: 20,
+    color: "#60269e",
   },
 });

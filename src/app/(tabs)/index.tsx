@@ -21,9 +21,22 @@ export default function Index() {
 			{/* we will show ur qr here*/}
 
 			<View style={styles.eventsContainer}>
-				<Event name="Hunter CS Club Meeting" />
-				<Event name="GWC Meeting" location='Hunter East 706' description='A meeting for members to chill and hang out.' start_time={new Date('2025-05-03T18:00:00')} end_time={new Date('2025-05-03T20:00:00')} />
-				<Event name="Finals Wellness" />
+				<Event
+					id={273}
+					name="Hunter CS Club Meeting"
+				/>
+				<Event
+					id={349}
+					name="GWC Meeting"
+					location='Hunter East 706'
+					description='A meeting for members to chill and hang out.'
+					start_time={new Date('2025-05-03T18:00:00')}
+					end_time={new Date('2025-05-03T20:00:00')}
+				/>
+				<Event
+					id={538}
+					name="Finals Wellness"
+				/>
 			</View>
 		</ScrollView>
 	</SafeAreaView>

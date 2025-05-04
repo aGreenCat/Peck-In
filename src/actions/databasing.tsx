@@ -22,7 +22,7 @@ export async function storeUser({name, emplid, email} : {name: string, emplid: s
 }
 
 export async function storeEvent({name} : {name: string}){
-    const {error} = await supabase.from('Events').insert([{Name: name}]);
+    const {data, error} = await supabase.from('Events').insert([{"Event Name": name}]).select('id');
     if (error){
         console.log(error); //Placeholder?
     }
@@ -33,9 +33,9 @@ export async function getUser({emplid} : {emplid: string}){
     return data;
 }
 
-export async function getEvent({name} : {name: string}){
-    const {data, error} = await supabase.from('Events').select().eq('Name', name);
-    return data;
+export async function getEvent({id} : {id: number}){
+    const {data, error} = await supabase.from('Events').select('*').eq('id', id);
+    return data?.[0];
 }
 /*
 async function reading(){
