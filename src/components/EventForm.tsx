@@ -15,6 +15,7 @@ type EventFormData = {
 
 const EventForm = ({ user } : { user : User}) => {
   const [showForm, setForms] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const {
 	control,
@@ -24,6 +25,7 @@ const EventForm = ({ user } : { user : User}) => {
 
   const onSubmit = async (data: EventFormData) => {
 	console.log(data);
+	setLoading(true);
 
 	let { error } = await storeEvent({
 	  EventName: data.name,
@@ -34,6 +36,11 @@ const EventForm = ({ user } : { user : User}) => {
 	  console.error("Error storing event:", error);
 	else
 	  console.log("Event stored successfully");
+
+	setLoading(false);
+	setForms(false);
+
+	console.log("Event added successfully");
   }
   
   return (
@@ -117,8 +124,10 @@ const EventForm = ({ user } : { user : User}) => {
 					name="end_time"
 					rules={{ required: false }}
 				/>
-				<TouchableOpacity onPress={handleSubmit(onSubmit)} style={{backgroundColor: '#60269e', padding: 10, borderRadius: 8}}>
-					<Text style={{color: 'white', textAlign: 'center'}}>Add Event</Text>
+				<TouchableOpacity onPress={handleSubmit(onSubmit)} style={{backgroundColor: '#60269e', padding: 10, borderRadius: 8}} disabled={loading}>
+					{loading 
+					? <Text style={{color: 'white', textAlign: 'center'}}>Loading...</Text>
+					: <Text style={{color: 'white', textAlign: 'center'}}>Add Event</Text>}
 				</TouchableOpacity>
 			</View>
 		}

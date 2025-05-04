@@ -181,7 +181,6 @@ export default function Profile() {
 		  ?
 		  <View style={styles.buttonContainer}>
 			<Button color='gray' title="Change User" onPress={async () => {
-				// TODO: remove from supabase
 
 				await SecureStore.deleteItemAsync('name');
 				await SecureStore.deleteItemAsync('emplid');
@@ -195,7 +194,7 @@ export default function Profile() {
 		  :
 		  <View style={styles.buttonContainer}>
             {loading 
-			?	<Button title="Saving..." onPress={handleSubmit(onSubmit)} />
+			?	<Button title="Saving..." onPress={handleSubmit(onSubmit)} disabled={loading}/>
 			:	<Button title="Save" onPress={handleSubmit(onSubmit)} />
 			}
           </View>
