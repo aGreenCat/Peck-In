@@ -6,7 +6,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import QRCodeDisplay from './QRCodeDisplay';
 
-export type Props = {
+export type EventProps = {
   id: number;	// for accessibility
   name: string;
   description?: string;
@@ -16,7 +16,7 @@ export type Props = {
   end_time?: Date;
 };
 
-const Event: React.FC<Props> = ({ id, name, description, location, host, start_time, end_time }) => {
+const Event: React.FC<EventProps> = ({ id, name, description, location, start_time, end_time }) => {
   const [showDetails, setShowDetails] = React.useState(false);
   
   return (
@@ -68,7 +68,6 @@ const Event: React.FC<Props> = ({ id, name, description, location, host, start_t
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
 	width: '100%',
 	flexDirection: 'row',
     alignItems: 'center',

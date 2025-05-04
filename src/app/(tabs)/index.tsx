@@ -24,7 +24,7 @@ export default function Index() {
 			:
 			<>
 			<View style={styles.mainQRContainer}>
-				<Text style={styles.title}>Your QR Code</Text>
+				<Text style={styles.title}>Personal QR</Text>
 				<View style={{backgroundColor: 'white', padding: 20, borderRadius: 12}}>
 					<QRCode
 						value={user?.emplid.toString()}
@@ -35,7 +35,7 @@ export default function Index() {
 				</View>
 			</View>
 
-			<Text style={styles.title}>Your Events</Text>
+			<Text style={styles.title}>Events You Attended</Text>
 			{/* Add events here */}
 
 			<View style={styles.eventsContainer}>
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
 	marginBottom: 20,
   },
   eventsContainer: {
-	flex: 1,
+	// flex: 1,
 	width: '100%',
 
 	borderRadius: 12,

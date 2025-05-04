@@ -1,4 +1,6 @@
 import { storeUser } from '@/actions/databasing';
+import Event, { EventProps } from '@/components/Event';
+import EventForm from '@/components/EventForm';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import * as SecureStore from 'expo-secure-store';
 import { useContext, useState } from 'react';
@@ -14,7 +16,7 @@ import {
 	View
 } from "react-native";
 
-type FormData = {
+type ProfileFormData = {
 	firstName: string;
   	lastName: string;
   	emplid: string;
@@ -26,7 +28,7 @@ export default function Profile() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<ProfileFormData>();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +37,7 @@ export default function Profile() {
   const user = context?.user || null;
   const setUser = context?.setUser!;
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: ProfileFormData) => {
     console.log(data);
 	setLoading(true);
 	
@@ -69,6 +71,10 @@ export default function Profile() {
 	setError(null);
   };
 
+  const addEvent = async (event: EventProps) => {
+	console.log("Adding event:", event);
+  }
+  
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -191,12 +197,20 @@ export default function Profile() {
 			}
           </View>
 		  }
+
+		<Text style={{...styles.title, marginVertical: 15}}>Your Club Events</Text>
+		{user && (
+			<View style={styles.eventsContainer}>
+				<EventForm addEvent={addEvent} />
+				<Event
+					id={273}
+					name="Hunter CS Club Meeting"
+				/>
+			</View>
+		)}
+		
         </ScrollView>
       </KeyboardAvoidingView>
-	  
-	  {/* <ScrollView> */}
-	 	{/* Add events here */}
-	  {/* </ScrollView> */}
     </SafeAreaView>
   );
 }
@@ -234,5 +248,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 20,
     color: "#60269e",
+  },
+  eventsContainer: {
+	// flex: 1,
+	width: '100%',
+
+	borderRadius: 12,
+	backgroundColor: "#cc64f5",
+	overflow: 'hidden',
+
+	marginBottom: 20,
   },
 });
