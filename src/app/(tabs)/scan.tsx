@@ -1,13 +1,20 @@
 'use client';
 import { storeAttendance } from '@/actions/databasing';
+import { userContext } from '@/contexts/userContext';
+import { useIsFocused } from '@react-navigation/native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { Button, StyleSheet, Text, View } from 'react-native';
 
 export default function Scan() {
-	const [displayText, setDisplayText] = useState("");			// what the user scanned
+	const isFocused = useIsFocused();
+	const cameraRef = useRef(null);
+
 	const [scanned, setScanned] = useState(false);				// prevent multiple scans
 	const [permission, requestPermission] = useCameraPermissions();
+
+	const context = React.useContext(userContext);
+	const user = context?.user || null;
 
 	useEffect(() => {
 		if (!permission) {
@@ -34,36 +41,53 @@ export default function Scan() {
 
 	// display confirmation page
 	if (scanned) {
-		return (
-		  <View style={styles.confirmationContainer}>
-			<Text style={styles.confirmationTitle}>✅ Peck-in complete!</Text>
-		  </View>
+		return user ? (
+			<View style={styles.confirmationContainer}>
+				<Text style={styles.confirmationTitle}>✅ Peck-In complete!</Text>
+				<Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />
+			</View>
+		) : (
+			<View style={styles.confirmationContainer}>
+				<Text style={styles.confirmationTitle}>❌ Peck-In failed!</Text>
+				<Text style={styles.confirmationData}>Please log in to your account.</Text>
+				<Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />
+			</View>
 		);
 	}
 
 	return (
 	<View style={styles.container}>
+		{isFocused && 
 		<CameraView
+			ref={cameraRef}
 			style={StyleSheet.absoluteFillObject}
 			onBarcodeScanned={({ data }) => {
 				const eventId = parseInt(data);
 				if (!isNaN(eventId)) {
-					setDisplayText(data);
-				  	{/*Process check-in using the numeric ID*/}
-					storeAttendance({EventID: Number(data), EmplID: 'a'}); // replace 'a' with global thing
+					if (!user) {
+						console.log("User not logged in. Cannot scan.");
+					}
+					else {
+						storeAttendance({EventID: Number(data), EmplID: user.emplid});
+					}
+
+					console.log("Scanned event ID:", eventId);
+					{/*Process check-in using the numeric ID*/}
 				  	setScanned(true);
 				}
 			}}	
 			barcodeScannerSettings={{
 				barcodeTypes: ['qr'],
 			}}
-			active={!scanned}
+			active={!scanned && isFocused}
 		>
-			{/* translucent overlay for aligning QR */}
-			<View style={styles.boxContainer}>
-				<View style={styles.scanBox} />
-			</View>
 		</CameraView>
+		}
+		
+		{/* translucent overlay for aligning QR */}
+		<View style={styles.boxContainer}>
+			<View style={styles.scanBox} />
+		</View>
 	</View>
 	);
 }
