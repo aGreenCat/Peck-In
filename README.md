@@ -1,50 +1,32 @@
-# Welcome to your Expo app 👋
+## Inspiration
+Imagine you’re a student trying to attend one of Hunter College’s student club events. You make your way to Thomas Hunter Hall, only to get stuck behind a crowd of people scanning a QR code taped to the wall. You awkwardly fumble with your phone, open the camera, and wait for the link to pop up—just to fill out the same Google Form again. Peck-In was built to replace this clunky, repetitive process with a streamlined, mobile-first solution.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+##  What it does
+Peck-In makes club attendance fast, secure, and seamless. Students create a one-time profile and receive a personal QR code. Clubs can generate QR codes for each event, and check-in can happen in two different modes depending on the club’s needs. 
+- **Efficiency Mode**: Students independently scan the event’s QR code to check in instantly.
+- **Security Mode**: Organizers scan student QR codes using the app to confirm individual attendance.
+All attendance data is stored in Supabase, where clubs can view stats, export lists, and analyze punctuality trends.
 
-## Get started
+## How we built it
+1. Expo and React Native to develop a cross-platform mobile app.
+2. TypeScript to ensure type safety and data integrity.
+3. Supabase for secure authentication, user profile storage, and attendance logging.
+4. Libraries like React Navigation, AsyncStorage, React Native QR Code, and expo-camera to power a smooth mobile user experience with persistent profile storage and real-time scanning.
 
-1. Install dependencies
+## Challenges we ran into
 
-   ```bash
-   npm install
-   ```
+We ran into issues with cross-platform mobile compatibility, especially for camera permissions. The Android version experienced bugs with the camera: when switching from the scan tab to another and then back, the camera would go black. This was a highly specific issue that would affect a big proportion of our users, so we took a deep dive down Stack Overflow to finally find the root cause and corresponding solution.
 
-2. Start the app
+## Accomplishments that we're proud of
 
-   ```bash
-   npx expo start
-   ```
+In under 48 hours, our team successfully developed a fully functional mobile application. This achievement represents a scalable proof-of-concept built upon a robust code foundation. By consistently applying best practices in Git, we effectively prevented significant version control issues throughout our rapid development process.
 
-In the output, you'll find options to open the app in a
+## What we learned
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+How strict TypeScript is with types, but how valuable it is for reducing developers errors down the line. 
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## What's next for Peck-In
 
-## Get a fresh project
+Peck-In can be more than a centralized event check-in app for Hunter. The app can be extended to allow students to scan *each others’* QR codes to opt-in to a Hunter social network.
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Additional features like the option to add club logos to event QR codes or profile pictures to personal QR codes can be added. Customization can spice up check-ins and turn them into something fun and enjoyable.
