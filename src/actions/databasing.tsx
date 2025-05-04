@@ -14,8 +14,7 @@ async function storing() {
 export async function storeUser({name, emplid, email} : { name: string, emplid: string, email: string}) {
     const check = await getUser({EmplID: emplid});
     if (check){
-        return check;
-        //case of duplicate user. Do as you want
+        return {};
     }
     else{
         const {error} = await supabase.from('Students').insert([{Name: name, EmplID: emplid, Email: email}]);

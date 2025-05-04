@@ -1,9 +1,13 @@
 import { storeUser } from '@/actions/databasing';
+import renderEvents from '@/actions/renderEvents';
+import { EventProps } from '@/components/Event';
+import EventForm from '@/components/EventForm';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import * as SecureStore from 'expo-secure-store';
-import { useContext, useState } from 'react';
+import { Suspense, useContext, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
 import {
+	ActivityIndicator,
 	Button,
 	KeyboardAvoidingView,
 	SafeAreaView,
@@ -14,7 +18,8 @@ import {
 	View
 } from "react-native";
 
-type FormData = {
+
+type ProfileFormData = {
 	firstName: string;
   	lastName: string;
   	emplid: string;
@@ -26,7 +31,7 @@ export default function Profile() {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<ProfileFormData>();
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +40,7 @@ export default function Profile() {
   const user = context?.user || null;
   const setUser = context?.setUser!;
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: ProfileFormData) => {
     console.log(data);
 	setLoading(true);
 	
@@ -69,6 +74,10 @@ export default function Profile() {
 	setError(null);
   };
 
+  const addEvent = async (event: EventProps) => {
+	console.log("Adding event:", event);
+  }
+  
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -172,7 +181,6 @@ export default function Profile() {
 		  ?
 		  <View style={styles.buttonContainer}>
 			<Button color='gray' title="Change User" onPress={async () => {
-				// TODO: remove from supabase
 
 				await SecureStore.deleteItemAsync('name');
 				await SecureStore.deleteItemAsync('emplid');
@@ -186,17 +194,39 @@ export default function Profile() {
 		  :
 		  <View style={styles.buttonContainer}>
             {loading 
-			?	<Button title="Saving..." onPress={handleSubmit(onSubmit)} />
+			?	<Button title="Saving..." onPress={handleSubmit(onSubmit)} disabled={loading}/>
 			:	<Button title="Save" onPress={handleSubmit(onSubmit)} />
 			}
           </View>
 		  }
+
+		<Text style={{...styles.title, marginVertical: 15}}>Your Club Events</Text>
+		{user && (
+			<View style={styles.eventsContainer}>
+				<EventForm user={user}/>
+				<Suspense
+					fallback={
+						<View
+							style={{
+								width: '100%',
+								flexDirection: 'row',
+								alignItems: 'center',
+								justifyContent: 'center',
+							
+								padding: 20,
+								backgroundColor: '#60269e',
+							}}
+						>
+							<ActivityIndicator />
+						</View>	
+					}>
+					{user && renderEvents({EmplID: user.emplid})}
+				</Suspense>
+			</View>
+		)}
+		
         </ScrollView>
       </KeyboardAvoidingView>
-	  
-	  {/* <ScrollView> */}
-	 	{/* Add events here */}
-	  {/* </ScrollView> */}
     </SafeAreaView>
   );
 }
@@ -234,5 +264,15 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 20,
     color: "#60269e",
+  },
+  eventsContainer: {
+	// flex: 1,
+	width: '100%',
+
+	borderRadius: 12,
+	backgroundColor: "#cc64f5",
+	overflow: 'hidden',
+
+	marginBottom: 20,
   },
 });

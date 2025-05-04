@@ -1,7 +1,5 @@
 'use client';
 
-import { renderEvents } from '@/actions/renderEvents';
-import Event from '@/components/Event';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import React, { useContext } from 'react';
 import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -10,8 +8,6 @@ import QRCode from 'react-native-qrcode-svg';
 export default function Index() {
   const context = useContext<UserContextType>(userContext);
   const user = context?.user || null;
-
- 
 
   return (
 	<SafeAreaView style={styles.container}>
@@ -24,7 +20,7 @@ export default function Index() {
 			:
 			<>
 			<View style={styles.mainQRContainer}>
-				<Text style={styles.title}>Your QR Code</Text>
+				<Text style={styles.title}>Personal QR</Text>
 				<View style={{backgroundColor: 'white', padding: 20, borderRadius: 12}}>
 					<QRCode
 						value={user?.emplid.toString()}
@@ -35,32 +31,28 @@ export default function Index() {
 				</View>
 			</View>
 
-			<Text style={styles.title}>Your Events</Text>
+			<Text style={styles.title}>Events You Attended</Text>
 			{/* Add events here */}
 
 			<View style={styles.eventsContainer}>
 				<React.Suspense
 					fallback={
-						<ActivityIndicator />
+						<View
+							style={{
+								width: '100%',
+								flexDirection: 'row',
+								alignItems: 'center',
+								justifyContent: 'center',
+							
+								padding: 20,
+								backgroundColor: '#60269e',
+							}}
+						>
+							<ActivityIndicator />
+						</View>	
 					}>
-					{user && renderEvents({EmplID: '24357769'})}
+					{/* {user && renderPastEvents({EmplID: user.emplid})} */}
 				</React.Suspense>
-				<Event
-					id={273}
-					name="Hunter CS Club Meeting"
-				/>
-				<Event
-					id={349}
-					name="GWC Meeting"
-					location='Hunter East 706'
-					description='A meeting for members to chill and hang out.'
-					start_time={new Date('2025-05-03T18:00:00')}
-					end_time={new Date('2025-05-03T20:00:00')}
-				/>
-				<Event
-					id={538}
-					name="Finals Wellness"
-				/>
 			</View>
 			</>
 			}
@@ -83,7 +75,7 @@ const styles = StyleSheet.create({
 	marginBottom: 20,
   },
   eventsContainer: {
-	flex: 1,
+	// flex: 1,
 	width: '100%',
 
 	borderRadius: 12,
