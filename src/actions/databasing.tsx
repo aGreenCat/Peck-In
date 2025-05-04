@@ -44,15 +44,9 @@ export async function getUser({emplid} : {emplid: string}){
     return data;
 }
 
-<<<<<<< HEAD
 export async function getEvent({EventID} : {EventID: number}){
     const {data, error} = await supabase.from('Events').select().eq('EventID', EventID).limit(1);
     return data;
-=======
-export async function getEvent({id} : {id: number}){
-    const {data, error} = await supabase.from('Events').select('*').eq('id', id);
-    return data?.[0];
->>>>>>> master
 }
 
 export async function getEventsAttended({emplid} : {emplid: string}){
