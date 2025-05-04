@@ -1,5 +1,7 @@
 # Peck-In
+
 Simplifying event check-in for student clubs.
+
 ![Peck-In Logo](https://github.com/aGreenCat/Peck-In/blob/master/assets/logo.png)
 ---
 ## Inspiration
