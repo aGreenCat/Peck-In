@@ -34,38 +34,74 @@ export type Database = {
   }
   public: {
     Tables: {
-      Events: {
+      Clubs: {
         Row: {
-          "Event Name": string | null
+          ClubName: string | null
+          EmplID: string | null
           id: number
         }
         Insert: {
-          "Event Name"?: string | null
+          ClubName?: string | null
+          EmplID?: string | null
           id?: number
         }
         Update: {
-          "Event Name"?: string | null
+          ClubName?: string | null
+          EmplID?: string | null
           id?: number
+        }
+        Relationships: []
+      }
+      EventAttendance: {
+        Row: {
+          EmplID: string
+          EventID: number
+          id: number
+        }
+        Insert: {
+          EmplID: string
+          EventID: number
+          id?: number
+        }
+        Update: {
+          EmplID?: string
+          EventID?: number
+          id?: number
+        }
+        Relationships: []
+      }
+      Events: {
+        Row: {
+          EmplID: string | null
+          EventID: number
+          EventName: string | null
+        }
+        Insert: {
+          EmplID?: string | null
+          EventID?: number
+          EventName?: string | null
+        }
+        Update: {
+          EmplID?: string | null
+          EventID?: number
+          EventName?: string | null
         }
         Relationships: []
       }
       Students: {
         Row: {
           Email: string | null
-          EmplID: string | null
-          id: number
+          EmplID: string
           Name: string | null
         }
         Insert: {
           Email?: string | null
-          EmplID?: string | null
-          id?: number
+          EmplID?: string
           Name?: string | null
         }
         Update: {
           Email?: string | null
-          EmplID?: string | null
-          id?: number
+          EmplID?: string
           Name?: string | null
         }
         Relationships: []

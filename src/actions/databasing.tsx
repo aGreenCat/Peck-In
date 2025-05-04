@@ -11,8 +11,8 @@ async function storing() {
 }
     */
 export async function storeUser({name, emplid, email} : {name: string, emplid: string, email: string}) {
-    const check = getUser({emplid});
-    if (check != null){
+    const check = await getUser({emplid});
+    if (check){
         console.log("DUPLICATE USER");
     }
     const {error} = await supabase.from('Students').insert([{Name: name, EmplID: emplid, Email: email}]);
@@ -21,10 +21,21 @@ export async function storeUser({name, emplid, email} : {name: string, emplid: s
     }
 }
 
-export async function storeEvent({name} : {name: string}){
-    const {error} = await supabase.from('Events').insert([{Name: name}]);
+export async function storeEvent({EventName, EmplID} : {EventName: string, EmplID: string}){
+    const {error} = await supabase.from('Events').insert([{'EventName': EventName, 'EmplID': EmplID}]);
     if (error){
         console.log(error); //Placeholder?
+    }
+}
+/*
+export async function storeClub({clubname, clubleader} : {clubname: string, clubleader: string}){
+
+}
+*/
+export async function storeAttendance({EventID, EmplID} : {EventID: number, EmplID: string}){
+    const {error} = await supabase.from('EventAttendace').insert([{'EventID': EventID, 'EmplID': EmplID}]);
+    if (error){
+        console.log(error);
     }
 }
 
@@ -33,9 +44,24 @@ export async function getUser({emplid} : {emplid: string}){
     return data;
 }
 
-export async function getEvent({name} : {name: string}){
-    const {data, error} = await supabase.from('Events').select().eq('Name', name);
+export async function getEvent({EventID} : {EventID: number}){
+    const {data, error} = await supabase.from('Events').select().eq('EventID', EventID).limit(1);
     return data;
+}
+
+export async function getEventsAttended({emplid} : {emplid: string}){
+    const {data, error} = await supabase.from('EventAttendance').select('EventID').eq('EmplID', emplid);
+    //console.log(emplid);
+    //console.log(data);
+    let i = 0;
+    while( i < data!.length){
+        console.log(await getEvent(await data![i]));
+        i+= 1;
+    }
+}
+
+export async function getAttendees({EventID}: {EventID: number}){
+
 }
 /*
 async function reading(){

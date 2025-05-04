@@ -22,6 +22,7 @@ export default function Index() {
 	</SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
 	flex: 1,
