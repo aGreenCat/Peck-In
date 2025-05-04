@@ -2,7 +2,7 @@
 
 import Event from '@/components/Event';
 import { View } from 'react-native';
-import { getEventsByHost, getUser } from './databasing';
+import { getEventsAttended, getEventsByHost, getUser } from './databasing';
 
 export default async function renderEvents({EmplID}: { EmplID: string }) {
   const events = await getEventsByHost({EmplID: EmplID});
@@ -16,6 +16,24 @@ export default async function renderEvents({EmplID}: { EmplID: string }) {
           id={event.EventID}
           name={event.EventName!}
           host={hoster!.Name!}
+        />
+
+
+      )}
+    </View>
+  );
+}
+
+export async function renderPrevEvents({EmplID}: { EmplID: string}){
+  const prev_events = await getEventsAttended({EmplID: EmplID});
+
+  return (
+    <View>
+      {prev_events && prev_events.map(event => 
+
+        <Event
+          id={event.EventID}
+          name={event.EventName!}
         />
 
 
