@@ -1,6 +1,5 @@
 'use client';
 
-import Event from '@/components/Event';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import React, { useContext } from 'react';
 import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -54,22 +53,6 @@ export default function Index() {
 					}>
 					{/* {user && renderPastEvents({EmplID: user.emplid})} */}
 				</React.Suspense>
-				<Event
-					id={273}
-					name="Hunter CS Club Meeting"
-				/>
-				<Event
-					id={349}
-					name="GWC Meeting"
-					location='Hunter East 706'
-					description='A meeting for members to chill and hang out.'
-					start_time={new Date('2025-05-03T18:00:00')}
-					end_time={new Date('2025-05-03T20:00:00')}
-				/>
-				<Event
-					id={538}
-					name="Finals Wellness"
-				/>
 			</View>
 			</>
 			}
