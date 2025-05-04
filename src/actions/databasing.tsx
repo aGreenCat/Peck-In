@@ -13,8 +13,9 @@ async function storing() {
     */
 export async function storeUser({name, emplid, email} : { name: string, emplid: string, email: string}) {
     const check = await getUser({EmplID: emplid});
-    if (check == null || check!.length > 0){
-		return { error: "User already exists" };
+    if (check){
+        return check;
+        //case of duplicate user. Do as you want
     }
     else{
         const {error} = await supabase.from('Students').insert([{Name: name, EmplID: emplid, Email: email}]);
@@ -47,13 +48,19 @@ export async function storeAttendance({EventID, EmplID} : {EventID: number, Empl
 }
 
 export async function getUser({EmplID} : {EmplID: string}){
-    const {data, error } = await supabase.from('Students').select().eq('EmplID', EmplID);
+    const {data, error } = await supabase.from('Students').select().eq('EmplID', EmplID).single();
     return data;
 }
 
 export async function getEvent({EventID} : {EventID: number}){
-    const {data, error} = await supabase.from('Events').select('EventName').eq('EventID', EventID).limit(1);
+    const {data, error} = await supabase.from('Events').select('EventName').eq('EventID', EventID).single();
     return data;
+}
+
+export async function getEventsByHost({EmplID} : {EmplID: string}){
+    const obj = await supabase.from('Events').select().eq('EmplID', EmplID );
+    return obj.data;
+
 }
 
 export async function getEventsAttended({EmplID} : {EmplID: string}){
@@ -81,6 +88,8 @@ export async function getAttendees({EventID}: {EventID: number}){
     const people = await supabase.from('Students').select().in('EmplID', attenders);
     return (people.data);
 }
+
+
 /*
 async function reading(){
     const { data, error } = await supabase  .from('Students')  .select()    .eq('Name', 'Tedd Lee');
