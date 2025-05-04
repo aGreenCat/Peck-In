@@ -10,14 +10,17 @@ async function storing() {
     console.log(error);
 }
     */
-export async function storeUser({name, emplid, email} : {name: string, emplid: string, email: string}) {
-    const check = await getUser({emplid});
-    if (check){
-        console.log("DUPLICATE USER");
+export async function storeUser({name, emplid, email} : { name: string, emplid: string, email: string}) {
+    const check = await getUser({EmplID: emplid});
+    if (check == null || check!.length > 0){
+        console.log(check);
+        //case of duplicate user. Do as you want
     }
-    const {error} = await supabase.from('Students').insert([{Name: name, EmplID: emplid, Email: email}]);
-    if (error){
-        console.log(error); //Placeholder?
+    else{
+        const {error} = await supabase.from('Students').insert([{Name: name, EmplID: emplid, Email: email}]);
+        if (error){
+            console.log(error); //Placeholder?
+        }
     }
 }
 
@@ -39,8 +42,8 @@ export async function storeAttendance({EventID, EmplID} : {EventID: number, Empl
     }
 }
 
-export async function getUser({emplid} : {emplid: string}){
-    const {data, error } = await supabase.from('Students').select().eq('EmplID', emplid);
+export async function getUser({EmplID} : {EmplID: string}){
+    const {data, error } = await supabase.from('Students').select().eq('EmplID', EmplID);
     return data;
 }
 
@@ -49,19 +52,23 @@ export async function getEvent({EventID} : {EventID: number}){
     return data;
 }
 
-export async function getEventsAttended({emplid} : {emplid: string}){
-    const {data, error} = await supabase.from('EventAttendance').select('EventID').eq('EmplID', emplid);
+export async function getEventsAttended({Emplid} : {Emplid: string}){
+    const {data, error} = await supabase.from('EventAttendance').select('EventID').eq('EmplID', Emplid);
     //console.log(emplid);
     //console.log(data);
     let i = 0;
     while( i < data!.length){
-        console.log(await getEvent(await data![i]));
+        console.log(await getEvent( data![i]));
         i+= 1;
     }
 }
 
 export async function getAttendees({EventID}: {EventID: number}){
-
+    const {data, error} = await supabase.from('EventAttendance').select('EmplID').eq('EventID', EventID);
+    let i = 0;
+    while( i< data!.length){
+        console.log(await getUser(data![i]));
+    }
 }
 /*
 async function reading(){
