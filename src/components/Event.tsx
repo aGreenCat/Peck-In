@@ -92,6 +92,14 @@ const Event: React.FC<EventProps> = ({ id, name, description, location, host, st
 							title="View Attendance"
 							onPress={() => setShowAttendees(!showAttendees)}
 						/>
+
+						<View style={{height: 10}} />
+
+						<Button 
+							title="Download List"
+							onPress={() => alert('List has been downloaded!')}
+							color={'gray'}
+						/>
 					</>
 				)}
 			</View>
