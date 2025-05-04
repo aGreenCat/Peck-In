@@ -14,8 +14,8 @@ async function storing() {
 
 export async function storeUser({name, emplid, email} : { name: string, emplid: string, email: string}) {
     const check = await getUser({EmplID: emplid});
-    if (check == null || check!.length > 0){
-        console.log(check);
+    if (check!.length > 0){
+        return check![0];
         //case of duplicate user. Do as you want
     }
     else{
@@ -54,6 +54,12 @@ export async function getEvent({EventID} : {EventID: number}){
     return data;
 }
 
+export async function getEventsByHost({EmplID} : {EmplID: string}){
+    const obj = await supabase.from('Events').select().eq('EmplID', EmplID );
+    return obj.data;
+
+}
+
 export async function getEventsAttended({EmplID} : {EmplID: string}){
     const obj = await supabase.from('EventAttendance').select('EventID').eq('EmplID', EmplID);
     //console.log(emplid);
@@ -79,6 +85,8 @@ export async function getAttendees({EventID}: {EventID: number}){
     const people = await supabase.from('Students').select().in('EmplID', attenders);
     return (people.data);
 }
+
+
 /*
 async function reading(){
     const { data, error } = await supabase  .from('Students')  .select()    .eq('Name', 'Tedd Lee');
