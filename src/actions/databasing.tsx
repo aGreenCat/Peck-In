@@ -10,26 +10,32 @@ async function storing() {
     console.log(error);
 }
     */
-export async function storeUser({name, emplid, email} : {name: string, emplid: string, email: string}) {
-    const check = getUser({emplid});
-    if (check != null){
-        console.log("DUPLICATE USER");
+export async function storeUser({name, emplid, email} : { name: string, emplid: string, email: string}) {
+    const check = await getUser({EmplID: emplid});
+    if (check == null || check!.length > 0){
+		return { error: "User already exists" };
     }
-    const {error} = await supabase.from('Students').insert([{Name: name, EmplID: emplid, Email: email}]);
-    if (error){
-        console.log(error); //Placeholder?
+    else{
+        const {error} = await supabase.from('Students').insert([{Name: name, EmplID: emplid, Email: email}]);
+        if (error){
+            return { error: error };
+        }
     }
+
+	return {};
 }
 
 export async function storeEvent({name} : {name: string}){
-    const {data, error} = await supabase.from('Events').insert([{"Event Name": name}]).select('id');
+    const {data, error} = await supabase.from('Events').insert([{"Event Name": name}]).select('id').single();
     if (error){
-        console.log(error); //Placeholder?
+        return { error: error };
     }
+
+	return { data: data };
 }
 
-export async function getUser({emplid} : {emplid: string}){
-    const {data, error } = await supabase.from('Students').select().eq('EmplID', emplid);
+export async function getUser({EmplID} : {EmplID: string}){
+    const {data, error } = await supabase.from('Students').select().eq('EmplID', EmplID);
     return data;
 }
 

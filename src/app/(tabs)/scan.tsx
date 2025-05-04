@@ -1,10 +1,13 @@
 'use client';
+import { useIsFocused } from '@react-navigation/native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function Scan() {
-	const [displayText, setDisplayText] = useState("");			// what the user scanned
+	const isFocused = useIsFocused();
+	const cameraRef = useRef(null);
+
 	const [scanned, setScanned] = useState(false);				// prevent multiple scans
 	const [permission, requestPermission] = useCameraPermissions();
 
@@ -42,26 +45,30 @@ export default function Scan() {
 
 	return (
 	<View style={styles.container}>
+		{isFocused && 
 		<CameraView
+			ref={cameraRef}
 			style={StyleSheet.absoluteFillObject}
 			onBarcodeScanned={({ data }) => {
 				const eventId = parseInt(data);
 				if (!isNaN(eventId)) {
-					setDisplayText(data);
-				  	{/*Process check-in using the numeric ID*/}
+					console.log("Scanned event ID:", eventId);
+					{/*Process check-in using the numeric ID*/}
 				  	setScanned(true);
 				}
 			}}	
 			barcodeScannerSettings={{
 				barcodeTypes: ['qr'],
 			}}
-			active={!scanned}
+			active={!scanned && isFocused}
 		>
-			{/* translucent overlay for aligning QR */}
-			<View style={styles.boxContainer}>
-				<View style={styles.scanBox} />
-			</View>
 		</CameraView>
+		}
+		
+		{/* translucent overlay for aligning QR */}
+		<View style={styles.boxContainer}>
+			<View style={styles.scanBox} />
+		</View>
 	</View>
 	);
 }
