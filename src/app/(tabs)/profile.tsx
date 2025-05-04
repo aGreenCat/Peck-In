@@ -1,5 +1,5 @@
 import { storeUser } from '@/actions/databasing';
-import renderEvents from '@/actions/renderEvents';
+import { renderEvents } from '@/actions/renderEvents';
 import { EventProps } from '@/components/Event';
 import EventForm from '@/components/EventForm';
 import { userContext, UserContextType } from '@/contexts/userContext';
