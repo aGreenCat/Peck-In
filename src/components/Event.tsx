@@ -1,0 +1,91 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+import QRCodeDisplay from './QRCodeDisplay';
+
+export type Props = {
+  id: number;	// for accessibility
+  name: string;
+  description?: string;
+  location?: string;
+  start_time?: Date;
+  end_time?: Date;
+};
+
+const Event: React.FC<Props> = ({ id, name, description, location, start_time, end_time }) => {
+  const [showDetails, setShowDetails] = React.useState(false);
+  
+  return (
+	<>
+		<View style={styles.container}>
+			<Text style={styles.greeting}>{name}</Text>
+			<TouchableOpacity onPress={() => setShowDetails(!showDetails)} style={styles.smallButton}>
+				<Ionicons name={`chevron-${showDetails ? 'back' : 'down'}`} size={24} color="white" />
+			</TouchableOpacity>
+		</View>
+		{showDetails &&
+			<View style={{backgroundColor: '#D8C1F0', padding: 16}}>
+				{location && <Text>{location}</Text>}
+				{start_time && (
+					<Text>
+						{start_time.toLocaleString([], {
+						month: 'short',
+						day: 'numeric',
+						hour: '2-digit',
+						minute: '2-digit',
+						})}
+						{end_time && ` - ${end_time.toLocaleString([], {
+							month: 'short',
+							day: 'numeric',
+							hour: '2-digit',
+							minute: '2-digit',
+						})}`}
+					</Text>
+				)}
+
+				{description && 
+					<Text style={styles.dropdownText}>
+						{description}
+					</Text>
+				}
+
+				{/* display QR code in the dropdown (FOR NOW, so we know it works) */}
+				<QRCodeDisplay 
+					eventId={id} 
+					eventName={name} 
+				/>
+			</View>
+		}
+	</>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+	width: '100%',
+	flexDirection: 'row',
+    alignItems: 'center',
+	justifyContent: 'space-between',
+
+	padding: 5,
+	backgroundColor: '#60269e',
+  },
+  greeting: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    margin: 16,
+	color: '#fff',
+  },
+  smallButton: {
+	padding: 8,
+	backgroundColor: 'transparent',
+  },
+  dropdownText: {
+	color: '#60269e',
+	marginBottom: 4,
+  },
+});
+
+export default Event;
