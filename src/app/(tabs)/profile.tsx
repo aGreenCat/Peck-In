@@ -1,11 +1,12 @@
 import { storeUser } from '@/actions/databasing';
-import Event, { EventProps } from '@/components/Event';
+import { EventProps } from '@/components/Event';
 import EventForm from '@/components/EventForm';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import * as SecureStore from 'expo-secure-store';
-import { useContext, useState } from 'react';
+import { Suspense, useContext, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
 import {
+	ActivityIndicator,
 	Button,
 	KeyboardAvoidingView,
 	SafeAreaView,
@@ -201,11 +202,13 @@ export default function Profile() {
 		<Text style={{...styles.title, marginVertical: 15}}>Your Club Events</Text>
 		{user && (
 			<View style={styles.eventsContainer}>
-				<EventForm addEvent={addEvent} />
-				<Event
-					id={273}
-					name="Hunter CS Club Meeting"
-				/>
+				<EventForm user={user}/>
+				<Suspense
+					fallback={
+						<ActivityIndicator />
+					}>
+					{user && renderEvents({EmplID: user.emplid})}
+				</Suspense>
 			</View>
 		)}
 		
