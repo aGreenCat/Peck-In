@@ -4,7 +4,7 @@ import Event from '@/components/Event';
 import { View } from 'react-native';
 import { getEventsAttended, getEventsByHost, getUser } from './databasing';
 
-export default async function renderEvents({EmplID}: { EmplID: string }) {
+export async function renderEvents({EmplID}: { EmplID: string }) {
   const events = await getEventsByHost({EmplID: EmplID});
   const hoster = await getUser({EmplID: EmplID});
 
