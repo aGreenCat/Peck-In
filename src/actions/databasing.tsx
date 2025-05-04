@@ -14,7 +14,7 @@ async function storing() {
 export async function storeUser({name, emplid, email} : { name: string, emplid: string, email: string}) {
     const check = await getUser({EmplID: emplid});
     if (check!.length > 0){
-        return check![0];
+        return {}
         //case of duplicate user. Do as you want
     }
     else{
