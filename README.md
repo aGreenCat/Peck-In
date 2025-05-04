@@ -1,3 +1,7 @@
+# Peck-In
+Simplifying event check-in for student clubs.
+![Peck-In Logo](https://github.com/aGreenCat/Peck-In/blob/master/assets/logo.png&raw=true)
+---
 ## Inspiration
 Imagine you’re a student trying to attend one of Hunter College’s student club events. You make your way to Thomas Hunter Hall, only to get stuck behind a crowd of people scanning a QR code taped to the wall. You awkwardly fumble with your phone, open the camera, and wait for the link to pop up—just to fill out the same Google Form again. Peck-In was built to replace this clunky, repetitive process with a streamlined, mobile-first solution.
 
