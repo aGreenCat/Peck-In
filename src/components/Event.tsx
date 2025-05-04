@@ -47,7 +47,7 @@ const Event: React.FC<EventProps> = ({ id, name, description, location, host, st
   return (
 	<>
 		<View style={styles.container}>
-			<Text style={styles.greeting}>{name + ((!noqr && attendees) ? ` (${attendees.length})` : '')}</Text>
+			<Text style={styles.greeting}>{name + ((!noqr && attendees) ? ` (${attendees.length} Attendees)` : '')}</Text>
 			<TouchableOpacity onPress={() => setShowDetails(!showDetails)} style={styles.smallButton}>
 				<Ionicons name={`chevron-${showDetails ? 'back' : 'down'}`} size={24} color="white" />
 			</TouchableOpacity>
