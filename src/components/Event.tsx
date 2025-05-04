@@ -26,21 +26,22 @@ const Event: React.FC<EventProps> = ({ id, name, description, location, host, st
   const [showAttendees, setShowAttendees] = React.useState(false);
   const [attendees, setAttendees] = React.useState<User[]>([]);
 
-  useEffect(() => {
-	const fetchAttendees = async () => {
-	  const raw_attendees = await getAttendees({EventID: id});
-	  const attendees = raw_attendees?.map((attendee) => {
-		return {
-		  name: attendee.Name!,
-		  emplid: attendee.EmplID!,
-		  email: attendee.Email!,
-		}
-	  });
-	  setAttendees(attendees!);
-	};
+  const fetchAttendees = async () => {
+	const raw_attendees = await getAttendees({EventID: id});
+	const attendees = raw_attendees?.map((attendee) => {
+	  return {
+		name: attendee.Name!,
+		emplid: attendee.EmplID!,
+		email: attendee.Email!,
+	  }
+	});
+	setAttendees(attendees!);
+  };
 
-	if (!noqr)
+  useEffect(() => {
+	if (!noqr) {
 		fetchAttendees();
+	}
   }, []);
   
   return (
@@ -90,7 +91,10 @@ const Event: React.FC<EventProps> = ({ id, name, description, location, host, st
 
 						<Button 
 							title="View Attendance"
-							onPress={() => setShowAttendees(!showAttendees)}
+							onPress={() => {
+								fetchAttendees();
+								setShowAttendees(!showAttendees)
+							}}
 						/>
 
 						<View style={{height: 10}} />
