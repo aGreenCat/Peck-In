@@ -2,11 +2,10 @@
 
 import Event from '@/components/Event';
 import { View } from 'react-native';
-import { getEventsAttended, getEventsByHost, getUser } from './databasing';
+import { getEventsAttended, getEventsByHost } from './databasing';
 
 export async function renderEvents({EmplID}: { EmplID: string }) {
   const events = await getEventsByHost({EmplID: EmplID});
-  const hoster = await getUser({EmplID: EmplID});
 
   return (
     <View>
@@ -15,9 +14,7 @@ export async function renderEvents({EmplID}: { EmplID: string }) {
         <Event
           id={event.EventID}
           name={event.EventName!}
-          host={hoster!.Name!}
         />
-
 
       )}
     </View>
@@ -34,8 +31,8 @@ export async function renderPrevEvents({EmplID}: { EmplID: string}){
         <Event
           id={event.EventID}
           name={event.EventName!}
+		  noqr={true}
         />
-
 
       )}
     </View>

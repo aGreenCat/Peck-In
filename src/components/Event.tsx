@@ -14,9 +14,10 @@ export type EventProps = {
   host?: string;
   start_time?: Date;
   end_time?: Date;
+  noqr?: boolean; // if true, don't show QR code
 };
 
-const Event: React.FC<EventProps> = ({ id, name, description, location, host, start_time, end_time }) => {
+const Event: React.FC<EventProps> = ({ id, name, description, location, host, start_time, end_time, noqr=false }) => {
   const [showDetails, setShowDetails] = React.useState(false);
   
   return (
@@ -55,11 +56,10 @@ const Event: React.FC<EventProps> = ({ id, name, description, location, host, st
 				}
 
 
-				{/* display QR code in the dropdown (FOR NOW, so we know it works) */}
-				<QRCodeDisplay 
+				{!noqr && <QRCodeDisplay 
 					eventId={id} 
 					eventName={name} 
-				/>
+				/>}
 			</View>
 		}
 	</>
