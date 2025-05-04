@@ -1,6 +1,5 @@
 'use client';
 
-import renderEvents from '@/actions/renderEvents';
 import Event from '@/components/Event';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import React, { useContext } from 'react';
@@ -10,8 +9,6 @@ import QRCode from 'react-native-qrcode-svg';
 export default function Index() {
   const context = useContext<UserContextType>(userContext);
   const user = context?.user || null;
-
- 
 
   return (
 	<SafeAreaView style={styles.container}>
@@ -41,9 +38,21 @@ export default function Index() {
 			<View style={styles.eventsContainer}>
 				<React.Suspense
 					fallback={
-						<ActivityIndicator />
+						<View
+							style={{
+								width: '100%',
+								flexDirection: 'row',
+								alignItems: 'center',
+								justifyContent: 'center',
+							
+								padding: 20,
+								backgroundColor: '#60269e',
+							}}
+						>
+							<ActivityIndicator />
+						</View>	
 					}>
-					{user && renderEvents({EmplID: '24357769'})}
+					{/* {user && renderPastEvents({EmplID: user.emplid})} */}
 				</React.Suspense>
 				<Event
 					id={273}

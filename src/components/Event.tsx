@@ -16,7 +16,7 @@ export type EventProps = {
   end_time?: Date;
 };
 
-const Event: React.FC<EventProps> = ({ id, name, description, location, start_time, end_time }) => {
+const Event: React.FC<EventProps> = ({ id, name, description, location, host, start_time, end_time }) => {
   const [showDetails, setShowDetails] = React.useState(false);
   
   return (

@@ -1,4 +1,5 @@
 import { storeUser } from '@/actions/databasing';
+import renderEvents from '@/actions/renderEvents';
 import { EventProps } from '@/components/Event';
 import EventForm from '@/components/EventForm';
 import { userContext, UserContextType } from '@/contexts/userContext';
@@ -16,6 +17,7 @@ import {
 	TextInput,
 	View
 } from "react-native";
+
 
 type ProfileFormData = {
 	firstName: string;
@@ -205,7 +207,19 @@ export default function Profile() {
 				<EventForm user={user}/>
 				<Suspense
 					fallback={
-						<ActivityIndicator />
+						<View
+							style={{
+								width: '100%',
+								flexDirection: 'row',
+								alignItems: 'center',
+								justifyContent: 'center',
+							
+								padding: 20,
+								backgroundColor: '#60269e',
+							}}
+						>
+							<ActivityIndicator />
+						</View>	
 					}>
 					{user && renderEvents({EmplID: user.emplid})}
 				</Suspense>
