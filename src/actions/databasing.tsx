@@ -73,7 +73,7 @@ export async function getEventsAttended({EmplID} : {EmplID: string}){
         ids.push(obj.data![i].EventID);
     }
     console.log(ids);
-    const events = await supabase.from('Events').select('EventName').in('EventID', ids);
+    const events = await supabase.from('Events').select().in('EventID', ids);
     return (events.data);
      
 }
