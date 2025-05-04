@@ -35,8 +35,7 @@ export default function Scan() {
 	if (scanned) {
 		return (
 		  <View style={styles.confirmationContainer}>
-			<Text style={styles.confirmationTitle}>✅ Check-in complete!</Text>
-			<Text style={styles.confirmationData}>{displayText}</Text>
+			<Text style={styles.confirmationTitle}>✅ Peck-in complete!</Text>
 		  </View>
 		);
 	}
@@ -46,11 +45,13 @@ export default function Scan() {
 		<CameraView
 			style={StyleSheet.absoluteFillObject}
 			onBarcodeScanned={({ data }) => {
-				setScanned(true);
-				setDisplayText(data);
-
-				
-			}}
+				const eventId = parseInt(data);
+				if (!isNaN(eventId)) {
+					setDisplayText(data);
+				  	{/*Process check-in using the numeric ID*/}
+				  	setScanned(true);
+				}
+			}}	
 			barcodeScannerSettings={{
 				barcodeTypes: ['qr'],
 			}}
@@ -115,16 +116,18 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		padding: 20,
-	  },
-	  confirmationTitle: {
+	},
+
+	confirmationTitle: {
 		fontSize: 24,
 		color: '#0f0',
 		marginBottom: 12,
-	  },
-	  confirmationData: {
+	},
+	
+	confirmationData: {
 		fontSize: 18,
 		color: '#fff',
 		textAlign: 'center',
-	  },	  
+	},	  
 });
   

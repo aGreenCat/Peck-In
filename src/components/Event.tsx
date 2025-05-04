@@ -2,7 +2,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import QRCodeDisplay from './QRCodeDisplay';
+
 export type Props = {
+  id: number;	// for accessibility
   name: string;
   description?: string;
   location?: string;
@@ -10,7 +13,7 @@ export type Props = {
   end_time?: Date;
 };
 
-const Event: React.FC<Props> = ({ name, description, location, start_time, end_time }) => {
+const Event: React.FC<Props> = ({ id, name, description, location, start_time, end_time }) => {
   const [showDetails, setShowDetails] = React.useState(false);
   
   return (
@@ -18,11 +21,11 @@ const Event: React.FC<Props> = ({ name, description, location, start_time, end_t
 		<View style={styles.container}>
 			<Text style={styles.greeting}>{name}</Text>
 			<TouchableOpacity onPress={() => setShowDetails(!showDetails)} style={styles.smallButton}>
-				<Ionicons name={`chevron-${showDetails ? 'back' : 'down'}`} size={24} color="black" />
+				<Ionicons name={`chevron-${showDetails ? 'back' : 'down'}`} size={24} color="white" />
 			</TouchableOpacity>
 		</View>
 		{showDetails &&
-			<View style={{backgroundColor: '#bb54e5', padding: 16}}>
+			<View style={{backgroundColor: '#D8C1F0', padding: 16}}>
 				{location && <Text>{location}</Text>}
 				{start_time && (
 					<Text>
@@ -41,7 +44,17 @@ const Event: React.FC<Props> = ({ name, description, location, start_time, end_t
 					</Text>
 				)}
 
-				{description && <Text>{description}</Text>}
+				{description && 
+					<Text style={styles.dropdownText}>
+						{description}
+					</Text>
+				}
+
+				{/* display QR code in the dropdown (FOR NOW, so we know it works) */}
+				<QRCodeDisplay 
+					eventId={id} 
+					eventName={name} 
+				/>
 			</View>
 		}
 	</>
@@ -57,16 +70,21 @@ const styles = StyleSheet.create({
 	justifyContent: 'space-between',
 
 	padding: 5,
-	backgroundColor: '#cc64f5',
+	backgroundColor: '#60269e',
   },
   greeting: {
     fontSize: 14,
     fontWeight: 'bold',
     margin: 16,
+	color: '#fff',
   },
   smallButton: {
 	padding: 8,
-	backgroundColor: 'none',
+	backgroundColor: 'transparent',
+  },
+  dropdownText: {
+	color: '#60269e',
+	marginBottom: 4,
   },
 });
 
