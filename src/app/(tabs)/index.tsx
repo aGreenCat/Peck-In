@@ -1,6 +1,6 @@
 'use client';
 
-import renderEvents from '@/actions/renderEvents';
+import { renderEvents } from '@/actions/renderEvents';
 import Event from '@/components/Event';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import React, { useContext } from 'react';
