@@ -1,6 +1,5 @@
 import { storeUser } from '@/actions/databasing';
 import { renderEvents } from '@/actions/renderEvents';
-import { EventProps } from '@/components/Event';
 import EventForm from '@/components/EventForm';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import * as SecureStore from 'expo-secure-store';
@@ -63,7 +62,6 @@ export default function Profile() {
 	await SecureStore.setItemAsync('email', data.email);
 	console.log("User stored successfully");
 
-	// TODO: actually set the user context!
 	setUser({
 		name: data.firstName + " " + data.lastName,
 		emplid: data.emplid,
@@ -73,10 +71,6 @@ export default function Profile() {
 	setLoading(false);
 	setError(null);
   };
-
-  const addEvent = async (event: EventProps) => {
-	console.log("Adding event:", event);
-  }
   
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -200,8 +194,9 @@ export default function Profile() {
           </View>
 		  }
 
-		<Text style={{...styles.title, marginVertical: 15}}>Your Club Events</Text>
 		{user && (
+			<>
+			<Text style={{...styles.title, marginVertical: 15}}>Your Club Events</Text>
 			<View style={styles.eventsContainer}>
 				<EventForm user={user}/>
 				<Suspense
@@ -223,6 +218,7 @@ export default function Profile() {
 					{user && renderEvents({EmplID: user.emplid})}
 				</Suspense>
 			</View>
+			</>
 		)}
 		
         </ScrollView>
