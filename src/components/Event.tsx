@@ -9,11 +9,12 @@ export type Props = {
   name: string;
   description?: string;
   location?: string;
+  host?: string;
   start_time?: Date;
   end_time?: Date;
 };
 
-const Event: React.FC<Props> = ({ id, name, description, location, start_time, end_time }) => {
+const Event: React.FC<Props> = ({ id, name, description, location, host, start_time, end_time }) => {
   const [showDetails, setShowDetails] = React.useState(false);
   
   return (
@@ -27,6 +28,7 @@ const Event: React.FC<Props> = ({ id, name, description, location, start_time, e
 		{showDetails &&
 			<View style={{backgroundColor: '#D8C1F0', padding: 16}}>
 				{location && <Text>{location}</Text>}
+				{host && <Text>Hosted By {host}</Text>}
 				{start_time && (
 					<Text>
 						{start_time.toLocaleString([], {
@@ -49,6 +51,7 @@ const Event: React.FC<Props> = ({ id, name, description, location, start_time, e
 						{description}
 					</Text>
 				}
+
 
 				{/* display QR code in the dropdown (FOR NOW, so we know it works) */}
 				<QRCodeDisplay 

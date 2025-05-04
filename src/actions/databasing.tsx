@@ -13,8 +13,8 @@ async function storing() {
     */
 export async function storeUser({name, emplid, email} : { name: string, emplid: string, email: string}) {
     const check = await getUser({EmplID: emplid});
-    if (check!.length > 0){
-        return check![0];
+    if (check){
+        return check;
         //case of duplicate user. Do as you want
     }
     else{
@@ -48,12 +48,12 @@ export async function storeAttendance({EventID, EmplID} : {EventID: number, Empl
 }
 
 export async function getUser({EmplID} : {EmplID: string}){
-    const {data, error } = await supabase.from('Students').select().eq('EmplID', EmplID);
+    const {data, error } = await supabase.from('Students').select().eq('EmplID', EmplID).single();
     return data;
 }
 
 export async function getEvent({EventID} : {EventID: number}){
-    const {data, error} = await supabase.from('Events').select('EventName').eq('EventID', EventID).limit(1);
+    const {data, error} = await supabase.from('Events').select('EventName').eq('EventID', EventID).single();
     return data;
 }
 
