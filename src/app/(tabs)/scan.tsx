@@ -34,7 +34,7 @@ export default function Scan() {
 	if (!permission.granted) {
 		return (
 		  <View style={styles.permissionContainer}>
-			<Text>No access to camera</Text>
+			<Button title="Give Camera Permission" onPress={() => requestPermission()} />
 		  </View>
 		);
 	}
