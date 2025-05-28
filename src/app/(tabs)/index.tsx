@@ -1,9 +1,8 @@
-'use client';
-
-import { renderPrevEvents } from '@/actions/renderEvents';
+import { PrevEventsList } from '@/components/EventsLists';
 import { userContext, UserContextType } from '@/contexts/userContext';
-import { Suspense, useContext } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { useContext } from 'react';
+import { Button, ScrollView, StyleSheet, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -14,10 +13,12 @@ export default function Index() {
   return (
 	<SafeAreaView style={styles.container}>
 		<ScrollView style={{padding: 10}}>
+			<Text style={{fontSize: 48, fontWeight: "600", textAlign: "center", marginVertical: 15, color: "#60269e"}}>Peck-In</Text>
 			{!user
 			?
-			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-				<Text style={styles.title}>Please log in to view your profile.</Text>
+			<View style={{flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20}}>
+				<Text style={styles.title}>Please head to the Profile tab to log in.</Text>
+				<Button title="Go to Profile" onPress={() => router.push('/profile')} />
 			</View>
 			:
 			<>
@@ -36,24 +37,7 @@ export default function Index() {
 			<Text style={styles.title}>Events You Attended</Text>
 			
 			<View style={styles.eventsContainer}>
-				<Suspense
-					fallback={
-						<View
-							style={{
-								width: '100%',
-								flexDirection: 'row',
-								alignItems: 'center',
-								justifyContent: 'center',
-							
-								padding: 20,
-								backgroundColor: '#60269e',
-							}}
-						>
-							<ActivityIndicator />
-						</View>	
-					}>
-					{user && renderPrevEvents({ user })}
-				</Suspense>
+				<PrevEventsList user={user} />
 			</View>
 			</>
 			}

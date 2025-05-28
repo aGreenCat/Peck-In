@@ -1,4 +1,3 @@
-'use client';
 import { getEvent, storeAttendance } from '@/actions/databasing';
 import { Tables } from '@/actions/supabase';
 import { userContext } from '@/contexts/userContext';

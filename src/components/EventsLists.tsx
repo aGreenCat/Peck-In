@@ -2,7 +2,7 @@ import Event from '@/components/Event';
 import { User } from '@/contexts/userContext';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
-import { getEventsAttended, getEventsByHost } from './databasing';
+import { getEventsAttended, getEventsByHost } from '../actions/databasing';
 
 export function EventsList({ user }: { user: User }) {
   const [events, setEvents] = useState<any[]>([]);

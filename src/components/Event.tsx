@@ -1,5 +1,3 @@
-'use client';
-
 import { getAttendees, subscribeToEventAttendance } from '@/actions/databasing';
 import { User } from '@/contexts/userContext';
 import Ionicons from '@expo/vector-icons/Ionicons';

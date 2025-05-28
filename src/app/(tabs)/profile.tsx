@@ -1,19 +1,18 @@
 import { getUserByEmail, storeUser } from '@/actions/databasing';
-import { renderEvents } from '@/actions/renderEvents';
 import EventForm from '@/components/EventForm';
+import { EventsList } from '@/components/EventsLists';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import * as SecureStore from 'expo-secure-store';
-import { Suspense, useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
 import {
-  ActivityIndicator,
-  Button,
-  KeyboardAvoidingView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  View
+    Button,
+    KeyboardAvoidingView,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -229,24 +228,7 @@ export default function Profile() {
 			<Text style={{...styles.title, marginVertical: 15}}>Your Club Events</Text>
 			<View style={styles.eventsContainer}>
 				<EventForm user={user}/>
-				<Suspense
-					fallback={
-						<View
-							style={{
-								width: '100%',
-								flexDirection: 'row',
-								alignItems: 'center',
-								justifyContent: 'center',
-							
-								padding: 20,
-								backgroundColor: '#60269e',
-							}}
-						>
-							<ActivityIndicator />
-						</View>	
-					}>
-					{user && renderEvents({ user })}
-				</Suspense>
+				<EventsList user={user} />
 			</View>
 			</>
 		)}
