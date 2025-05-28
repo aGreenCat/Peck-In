@@ -1,7 +1,7 @@
-import { getUserByEmail, storeUser } from '@/actions/databasing';
 import EventForm from '@/components/EventForm';
 import { EventsList } from '@/components/EventsLists';
 import { userContext, UserContextType } from '@/contexts/userContext';
+import { getUserByEmail, storeUser } from '@/db/database';
 import * as SecureStore from 'expo-secure-store';
 import { useContext, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";

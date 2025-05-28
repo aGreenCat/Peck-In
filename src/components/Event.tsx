@@ -1,5 +1,5 @@
-import { getAttendees, subscribeToEventAttendance } from '@/actions/databasing';
 import { User } from '@/contexts/userContext';
+import { getAttendees, subscribeToEventAttendance } from '@/db/database';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FC, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';

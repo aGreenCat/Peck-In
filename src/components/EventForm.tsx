@@ -1,5 +1,5 @@
-import { storeEvent } from '@/actions/databasing';
 import { User } from '@/contexts/userContext';
+import { storeEvent } from '@/db/database';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FC, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";

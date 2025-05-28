@@ -1,4 +1,4 @@
-import { Students } from "@/actions/databasing";
+import { Students } from "@/db/database";
 import { createContext, Dispatch, SetStateAction } from "react";
 
 export type User = Students;

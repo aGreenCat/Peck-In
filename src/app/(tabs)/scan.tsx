@@ -1,6 +1,6 @@
-import { getEvent, storeAttendance } from '@/actions/databasing';
-import { Tables } from '@/actions/supabase';
 import { userContext } from '@/contexts/userContext';
+import { getEvent, storeAttendance } from '@/db/database';
+import { Tables } from '@/db/supabase';
 import { useIsFocused } from '@react-navigation/native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useContext, useEffect, useRef, useState } from 'react';
