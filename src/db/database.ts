@@ -154,3 +154,21 @@ export function subscribeToEventAttendance(eventId: string, callback: (payload: 
 
   return subscription;
 }
+
+export function subscribeToNewEvents(callback: (payload: any) => void) {
+  const subscription = supabase
+    .channel(`new-events-${hostId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'Events',
+        filter: `host=eq.${eventId}`
+      },
+      callback
+    )
+    .subscribe();
+  
+  return subscription;
+}
