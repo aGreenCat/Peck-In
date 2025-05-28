@@ -1,71 +1,163 @@
 import { User } from '@/contexts/userContext';
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FC } from 'react';
+import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 type AttendeesDisplayProps = {
-	attendees: User[]
+	attendees: User[];
+	visible: boolean;
+	onClose: () => void;
 };
 
-const AttendeesDisplay: React.FC<AttendeesDisplayProps> = ({ attendees }) => {
+const AttendeesDisplay: FC<AttendeesDisplayProps> = ({ attendees, visible, onClose }) => {
 	if (!attendees || attendees.length === 0) {
 		return (
-			<View style={styles.container}>
-				<Text>No attendees found.</Text>
-			</View>
+			<Modal
+				visible={visible}
+				animationType="fade"
+				transparent={true}
+				onRequestClose={onClose}
+			>
+				<View style={styles.modalOverlay}>
+					<View style={styles.modalContainer}>
+						<View style={styles.header}>
+							<Text style={styles.title}>Attendees</Text>
+							<TouchableOpacity onPress={onClose} style={styles.closeButton}>
+								<Text style={styles.closeButtonText}>✕</Text>
+							</TouchableOpacity>
+						</View>
+						<Text>No attendees found.</Text>
+					</View>
+				</View>
+			</Modal>
 		);
 	}
 
 	return (
-		<ScrollView contentContainerStyle={styles.container}>
-			{attendees.map((attendee, index) => (
-				<React.Fragment key={index}>
-					<Text style={styles.name}>{attendee.name}</Text>
-					<View style={styles.idContainer}>
-						<Text style={styles.idLabel}>ID:</Text>
-						<Text style={styles.idValue}>{attendee.emplid}</Text>
+		<Modal
+			visible={visible}
+			animationType="fade"
+			transparent={true}
+			onRequestClose={onClose}
+		>
+			<View style={styles.modalOverlay}>
+				<View style={styles.modalContainer}>
+					<View style={styles.header}>
+						<Text style={styles.title}>Attendees ({attendees.length})</Text>
+						<TouchableOpacity onPress={onClose} style={styles.closeButton}>
+							<Text style={styles.closeButtonText}>✕</Text>
+						</TouchableOpacity>
 					</View>
-				</React.Fragment>
-			))}
-		</ScrollView>
+					
+					<ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+						{/* Header Row */}
+						<View style={styles.gridRow}>
+							<View style={styles.gridCell}>
+								<Text style={styles.headerText}>Name</Text>
+							</View>
+							<View style={styles.gridCell}>
+								<Text style={styles.headerText}>Employee ID</Text>
+							</View>
+							<View style={styles.gridCell}>
+								<Text style={styles.headerText}>Email</Text>
+							</View>
+						</View>
+						
+						{/* Attendee Rows */}
+						{attendees.map((attendee, index) => (
+							<View key={index} style={[styles.gridRow, index % 2 === 0 ? styles.evenRow : styles.oddRow]}>
+								<View style={styles.gridCell}>
+									<Text style={styles.cellText} selectable>{attendee.name}</Text>
+								</View>
+								<View style={styles.gridCell}>
+									<Text style={styles.cellText} selectable>{attendee.emplid}</Text>
+								</View>
+								<View style={styles.gridCell}>
+									<Text style={styles.cellText} selectable>{attendee.email}</Text>
+								</View>
+							</View>
+						))}
+					</ScrollView>
+				</View>
+			</View>
+		</Modal>
 	);
 };
 
 const styles = StyleSheet.create({
-	container: {
-	  alignItems: 'center',
-	  justifyContent: 'center',
-	  padding: 20,
-	  backgroundColor: 'white',
-	  borderRadius: 12,
-	  margin: 20,
-	  shadowColor: '#000',
-	  shadowOffset: { width: 0, height: 2 },
-	  shadowOpacity: 0.2,
-	  shadowRadius: 4,
-	  elevation: 5,
-	},
-	idContainer: {
-		flexDirection: 'row',
-		marginBottom: 5,
-		alignItems: 'center',
+	modalOverlay: {
+		flex: 1,
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
 		justifyContent: 'center',
+		alignItems: 'center',
 	},
-	idLabel: {
+	modalContainer: {
+		width: '90%',
+		maxHeight: '80%',
+		backgroundColor: 'white',
+		borderRadius: 12,
+		shadowColor: '#000',
+		shadowOffset: { width: 0, height: 2 },
+		shadowOpacity: 0.25,
+		shadowRadius: 8,
+		elevation: 10,
+	},
+	header: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		padding: 20,
+		borderBottomWidth: 1,
+		borderBottomColor: '#e0e0e0',
+	},
+	title: {
+		fontSize: 20,
 		fontWeight: 'bold',
-		marginRight: 8,
 		color: '#333',
 	},
-	idValue: {
-		fontSize: 18,
-		fontFamily: 'monospace',
-		backgroundColor: '#f5f5f5',
-		paddingHorizontal: 8,
-		borderRadius: 4,
+	closeButton: {
+		width: 30,
+		height: 30,
+		borderRadius: 15,
+		backgroundColor: '#f0f0f0',
+		justifyContent: 'center',
+		alignItems: 'center',
 	},
-	name: {
-		marginTop: 8,
-		color: '#60269e',
+	closeButtonText: {
+		fontSize: 18,
+		color: '#666',
+		fontWeight: 'bold',
+	},
+	scrollContainer: {
+		maxHeight: 400,
+		padding: 20,
+	},
+	gridRow: {
+		flexDirection: 'row',
+		borderBottomWidth: 1,
+		borderBottomColor: '#e0e0e0',
+		paddingVertical: 12,
+	},
+	gridCell: {
+		flex: 1,
+		paddingHorizontal: 8,
+		justifyContent: 'center',
+	},
+	headerText: {
+		fontWeight: 'bold',
+		fontSize: 16,
+		color: '#333',
 		textAlign: 'center',
+	},
+	cellText: {
+		fontSize: 14,
+		color: '#555',
+		textAlign: 'center',
+	},
+	evenRow: {
+		backgroundColor: '#f9f9f9',
+	},
+	oddRow: {
+		backgroundColor: 'white',
 	},
 });
   

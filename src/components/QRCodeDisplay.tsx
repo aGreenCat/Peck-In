@@ -1,14 +1,14 @@
-import React from 'react';
+import { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
 type QRCodeDisplayProps = {
-    eventId: number;
+    eventId: string;
     eventName: string;
     size?: number;
 };
 
-const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({ 
+const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ 
     eventId,
     eventName,
     size = 200
@@ -17,7 +17,7 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
     {/* for debuggin' */}
     // console.log('Received props:', { eventId, eventName });
 
-    const qrData = eventId.toString();
+    const qrData = eventId;
 
     return (
         <View style={styles.container}>
@@ -32,7 +32,12 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
             {/* Display event ID for accessibility. Might delete if we don't get to manual check-in through ID */}
             <View style={styles.idContainer}>
                 <Text style={styles.idLabel}>Event ID:</Text>
-                <Text style={styles.idValue} selectable={true}>{eventId}</Text>
+                <Text 
+                    style={styles.idValue} 
+                    selectable
+                >
+                    {eventId}
+                </Text>
             </View>
 
             {/* Render event name */}
@@ -71,6 +76,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
         paddingHorizontal: 8,
         borderRadius: 4,
+        flexShrink: 1,
     },
     eventName: {
         marginTop: 8,

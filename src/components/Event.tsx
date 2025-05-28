@@ -1,48 +1,61 @@
 'use client';
 
+import { getAttendees, subscribeToEventAttendance } from '@/actions/databasing';
 import { User } from '@/contexts/userContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import React, { useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-import { getAttendees } from '@/actions/databasing';
 import AttendeesDisplay from './AttendeesDisplay';
 import QRCodeDisplay from './QRCodeDisplay';
 
 export type EventProps = {
-  id: number;	// for accessibility
+  id: string;
   name: string;
-  description?: string;
-  location?: string;
-  host?: string;
-  start_time?: Date;
-  end_time?: Date;
+  description: string | null;
+  location: string | null;
+  checkedIn?: string | null;
+  time: string | null;
+  host: string;
   noqr?: boolean; // if true, don't show QR code
 };
 
-const Event: React.FC<EventProps> = ({ id, name, description, location, host, start_time, end_time, noqr=false }) => {
-  const [showDetails, setShowDetails] = React.useState(false);
+const Event: FC<EventProps> = ({ id, name, description, location, checkedIn, host, time, noqr=false }) => {
+  const [showDetails, setShowDetails] = useState(false);
+  const [showAttendees, setShowAttendees] = useState(false);
 
-  const [showAttendees, setShowAttendees] = React.useState(false);
-  const [attendees, setAttendees] = React.useState<User[]>([]);
+  const [attendees, setAttendees] = useState<User[]>([]);
 
   const fetchAttendees = async () => {
-	const raw_attendees = await getAttendees({EventID: id});
+	const raw_attendees = await getAttendees({event_id: id});
 	const attendees = raw_attendees?.map((attendee) => {
 	  return {
-		name: attendee.Name!,
-		emplid: attendee.EmplID!,
-		email: attendee.Email!,
+		id: attendee.id,
+		name: attendee.name,
+		emplid: attendee.emplid,
+		email: attendee.email,
 	  }
 	});
-	setAttendees(attendees!);
+	setAttendees(attendees || []);
   };
 
   useEffect(() => {
 	if (!noqr) {
+		// Initial fetch
 		fetchAttendees();
+		
+		// Set up real-time subscription
+		const subscription = subscribeToEventAttendance(id, (payload) => {
+			console.log('New attendance recorded:', payload);
+			// Refetch attendees when someone checks in
+			fetchAttendees();
+		});
+
+		// Cleanup subscription on unmount
+		return () => {
+			subscription.unsubscribe();
+		};
 	}
-  }, []);
+  }, [id, noqr]);
   
   return (
 	<>
@@ -54,24 +67,14 @@ const Event: React.FC<EventProps> = ({ id, name, description, location, host, st
 		</View>
 		{showDetails &&
 			<View style={{backgroundColor: '#D8C1F0', padding: 16}}>
-				{location && <Text>{location}</Text>}
+				<Text>{location && location}{location && (checkedIn || time) && ' • '}{checkedIn ? `Checked in: ${new Date(checkedIn).toLocaleString(undefined, { 
+					year: 'numeric', 
+					month: 'short', 
+					day: 'numeric', 
+					hour: '2-digit', 
+					minute: '2-digit' 
+				})}` : time}</Text>
 				{host && <Text>Hosted By {host}</Text>}
-				{start_time && (
-					<Text>
-						{start_time.toLocaleString([], {
-						month: 'short',
-						day: 'numeric',
-						hour: '2-digit',
-						minute: '2-digit',
-						})}
-						{end_time && ` - ${end_time.toLocaleString([], {
-							month: 'short',
-							day: 'numeric',
-							hour: '2-digit',
-							minute: '2-digit',
-						})}`}
-					</Text>
-				)}
 
 				{description && 
 					<Text style={styles.dropdownText}>
@@ -79,15 +82,20 @@ const Event: React.FC<EventProps> = ({ id, name, description, location, host, st
 					</Text>
 				}
 
-
 				{!noqr && (
 					<>
-						{showAttendees 
-						? <AttendeesDisplay attendees={attendees} />
-						: <QRCodeDisplay 
+						{showAttendees && 
+							<AttendeesDisplay 
+								attendees={attendees} 
+								visible={showAttendees} 
+								onClose={() => setShowAttendees(false)}
+							/>
+						}
+						
+						<QRCodeDisplay 
 							eventId={id} 
 							eventName={name} 
-						/>}
+						/>
 
 						<Button 
 							title="View Attendance"
@@ -139,7 +147,3 @@ const styles = StyleSheet.create({
 });
 
 export default Event;
-
-function onEffect(arg0: () => void) {
-	throw new Error('Function not implemented.');
-}

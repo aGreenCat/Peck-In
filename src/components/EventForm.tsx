@@ -1,7 +1,7 @@
 import { storeEvent } from '@/actions/databasing';
 import { User } from '@/contexts/userContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import React from 'react';
+import { FC, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -9,13 +9,11 @@ type EventFormData = {
   name: string;
   description?: string;
   location?: string;
-  start_time?: string;
-  end_time?: string;
 };
 
-const EventForm = ({ user } : { user : User}) => {
-  const [showForm, setForms] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+const EventForm: FC<{ user : User}> = ({ user }) => {
+  const [showForm, setForms] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
 	control,
@@ -25,11 +23,14 @@ const EventForm = ({ user } : { user : User}) => {
 
   const onSubmit = async (data: EventFormData) => {
 	console.log(data);
+	console.log(user);
 	setLoading(true);
 
 	let { error } = await storeEvent({
-	  EventName: data.name,
-	  EmplID: user!.emplid
+	  name: data.name,
+	  description: data.description,
+	  location: data.location,
+	  host: user.id
 	});
 
 	if (error)
@@ -73,7 +74,7 @@ const EventForm = ({ user } : { user : User}) => {
 					render={({ field: { onChange, onBlur, value } }) => (
 						<TextInput
 							style={{ backgroundColor: 'white', marginBottom: 10, padding: 8, borderRadius: 8 }}
-							placeholder="Description"
+							placeholder="Description (optional)"
 							onBlur={onBlur}
 							onChangeText={onChange}
 							value={value}
@@ -87,41 +88,13 @@ const EventForm = ({ user } : { user : User}) => {
 					render={({ field: { onChange, onBlur, value } }) => (
 						<TextInput
 							style={{ backgroundColor: 'white', marginBottom: 10, padding: 8, borderRadius: 8 }}
-							placeholder="Location"
+							placeholder="Location (optional)"
 							onBlur={onBlur}
 							onChangeText={onChange}
 							value={value}
 						/>
 					)}
 					name="location"
-					rules={{ required: false }}
-				/>
-				<Controller
-					control={control}
-					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							style={{ backgroundColor: 'white', marginBottom: 10, padding: 8, borderRadius: 8 }}
-							placeholder="Start Time"
-							onBlur={onBlur}
-							onChangeText={onChange}
-							value={value}
-						/>
-					)}
-					name="start_time"
-					rules={{ required: false }}
-				/>
-				<Controller
-					control={control}
-					render={({ field: { onChange, onBlur, value } }) => (
-						<TextInput
-							style={{ backgroundColor: 'white', marginBottom: 10, padding: 8, borderRadius: 8 }}
-							placeholder="End Time"
-							onBlur={onBlur}
-							onChangeText={onChange}
-							value={value}
-						/>
-					)}
-					name="end_time"
 					rules={{ required: false }}
 				/>
 				<TouchableOpacity onPress={handleSubmit(onSubmit)} style={{backgroundColor: '#60269e', padding: 10, borderRadius: 8}} disabled={loading}>

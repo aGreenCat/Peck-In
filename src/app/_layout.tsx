@@ -9,17 +9,13 @@ export default function Layout() {
   useEffect(() => {
 	const fetchUser = async () => {
 	  try {
-		const name = await SecureStore.getItemAsync('name');
-		const emplid = await SecureStore.getItemAsync('emplid');
-		const email = await SecureStore.getItemAsync('email');
+		// Get the entire user object from SecureStore
+		const userJson = await SecureStore.getItemAsync('user');
 
-		if (name && emplid && email) {
-		  setUser({
-			name: name,
-			emplid: emplid,
-			email: email,
-		  });
-		  console.log("User fetched successfully. Name: " + name + ", EmplID: " + emplid + ", Email: " + email);
+		if (userJson) {
+		  const userData = JSON.parse(userJson) as User;
+		  setUser(userData);
+		  console.log("User fetched successfully:", userData);
 		  return;
 		}
 		
