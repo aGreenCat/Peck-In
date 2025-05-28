@@ -1,7 +1,6 @@
 'use client';
 
 import { renderPrevEvents } from '@/actions/renderEvents';
-import Event from '@/components/Event';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import { Suspense, useContext } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -35,8 +34,7 @@ export default function Index() {
 			</View>
 
 			<Text style={styles.title}>Events You Attended</Text>
-			{/* Add events here */}
-
+			
 			<View style={styles.eventsContainer}>
 				<Suspense
 					fallback={
@@ -56,15 +54,6 @@ export default function Index() {
 					}>
 					{user && renderPrevEvents({email: user.email})}
 				</Suspense>
-				<Event
-					id="349"
-					name="GWC Meeting"
-					location='Hunter East 706'
-					description='A meeting for members to chill and hang out.'
-					start_time={new Date('2025-05-03T18:00:00')}
-					end_time={new Date('2025-05-03T20:00:00')}
-					noqr={true}
-				/>
 			</View>
 			</>
 			}

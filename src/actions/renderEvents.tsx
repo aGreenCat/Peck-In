@@ -8,14 +8,16 @@ export async function renderEvents({ email }: { email: string }) {
   
   return (
     <View>
-      {events ? events.map(event =>
+      {events && events.length > 0 ? events.map(event =>
         <Event
           key={event.id}
           id={event.id}
           name={event.name}
         />
       )
-      : <Text>No events found</Text>
+      : <View style={{ backgroundColor: '#60269e', padding: 16 }}>
+          <Text style={{ color: 'white' }}>No events found</Text>
+        </View>
       }  
     </View>
   );
@@ -26,7 +28,7 @@ export async function renderPrevEvents({ email }: { email: string }) {
 
   return (
     <View>
-      {prev_events ? prev_events.map(event =>
+      {prev_events && prev_events.length > 0 ? prev_events.map(event =>
         <Event
           key={event.id}
           id={event.id}
@@ -34,7 +36,9 @@ export async function renderPrevEvents({ email }: { email: string }) {
           noqr={true}
         />
       )
-      : <Text>No events found</Text>
+      : <View style={{ backgroundColor: '#60269e', padding: 16 }}>
+          <Text style={{ color: 'white' }}>No events found</Text>
+        </View>
       }
     </View>
   );
