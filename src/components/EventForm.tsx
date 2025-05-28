@@ -1,7 +1,7 @@
 import { storeEvent } from '@/actions/databasing';
 import { User } from '@/contexts/userContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import React from 'react';
+import { FC, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
@@ -13,9 +13,9 @@ type EventFormData = {
   end_time?: string;
 };
 
-const EventForm = ({ user } : { user : User}) => {
-  const [showForm, setForms] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+const EventForm: FC<{ user : User}> = ({ user }) => {
+  const [showForm, setForms] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
 	control,

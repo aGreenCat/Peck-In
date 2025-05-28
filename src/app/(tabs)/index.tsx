@@ -3,7 +3,7 @@
 import { renderPrevEvents } from '@/actions/renderEvents';
 import Event from '@/components/Event';
 import { userContext, UserContextType } from '@/contexts/userContext';
-import React, { useContext } from 'react';
+import { Suspense, useContext } from 'react';
 import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
@@ -37,7 +37,7 @@ export default function Index() {
 			{/* Add events here */}
 
 			<View style={styles.eventsContainer}>
-				<React.Suspense
+				<Suspense
 					fallback={
 						<View
 							style={{
@@ -54,7 +54,7 @@ export default function Index() {
 						</View>	
 					}>
 					{user && renderPrevEvents({EmplID: user.emplid})}
-				</React.Suspense>
+				</Suspense>
 				<Event
 					id={349}
 					name="GWC Meeting"

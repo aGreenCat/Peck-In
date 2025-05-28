@@ -1,12 +1,12 @@
 import { User } from '@/contexts/userContext';
-import React from 'react';
+import { FC, Fragment } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 type AttendeesDisplayProps = {
 	attendees: User[]
 };
 
-const AttendeesDisplay: React.FC<AttendeesDisplayProps> = ({ attendees }) => {
+const AttendeesDisplay: FC<AttendeesDisplayProps> = ({ attendees }) => {
 	if (!attendees || attendees.length === 0) {
 		return (
 			<View style={styles.container}>
@@ -18,13 +18,13 @@ const AttendeesDisplay: React.FC<AttendeesDisplayProps> = ({ attendees }) => {
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
 			{attendees.map((attendee, index) => (
-				<React.Fragment key={index}>
+				<Fragment key={index}>
 					<Text style={styles.name}>{attendee.name}</Text>
 					<View style={styles.idContainer}>
 						<Text style={styles.idLabel}>ID:</Text>
 						<Text style={styles.idValue}>{attendee.emplid}</Text>
 					</View>
-				</React.Fragment>
+				</Fragment>
 			))}
 		</ScrollView>
 	);

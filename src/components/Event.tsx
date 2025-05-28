@@ -2,7 +2,7 @@
 
 import { User } from '@/contexts/userContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import React, { useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { getAttendees } from '@/actions/databasing';
@@ -20,11 +20,11 @@ export type EventProps = {
   noqr?: boolean; // if true, don't show QR code
 };
 
-const Event: React.FC<EventProps> = ({ id, name, description, location, host, start_time, end_time, noqr=false }) => {
-  const [showDetails, setShowDetails] = React.useState(false);
+const Event: FC<EventProps> = ({ id, name, description, location, host, start_time, end_time, noqr=false }) => {
+  const [showDetails, setShowDetails] = useState(false);
 
-  const [showAttendees, setShowAttendees] = React.useState(false);
-  const [attendees, setAttendees] = React.useState<User[]>([]);
+  const [showAttendees, setShowAttendees] = useState(false);
+  const [attendees, setAttendees] = useState<User[]>([]);
 
   const fetchAttendees = async () => {
 	const raw_attendees = await getAttendees({EventID: id});

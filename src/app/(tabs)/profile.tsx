@@ -6,15 +6,15 @@ import * as SecureStore from 'expo-secure-store';
 import { Suspense, useContext, useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
 import {
-	ActivityIndicator,
-	Button,
-	KeyboardAvoidingView,
-	SafeAreaView,
-	ScrollView,
-	StyleSheet,
-	Text,
-	TextInput,
-	View
+  ActivityIndicator,
+  Button,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View
 } from "react-native";
 
 
@@ -86,88 +86,87 @@ export default function Profile() {
 		  {user 
 		  ? 
 		  <>
-		  <Text>EMPLID: {user.emplid}</Text>
-		  <Text>Email: {user.email}</Text>
+        <Text>EMPLID: {user.emplid}</Text>
+        <Text>Email: {user.email}</Text>
 		  </>
 		  :
 		  <>
-          <Controller
-            control={control}
-            name="firstName"
-            rules={{ required: "First name is required" }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                placeholder="First name"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-          />
-          {errors.firstName && <Text style={styles.error}>{errors.firstName.message}</Text>}
+        <Controller
+          control={control}
+          name="firstName"
+          rules={{ required: "First name is required" }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder="First name"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+        {errors.firstName && <Text style={styles.error}>{errors.firstName.message}</Text>}
 
-          <Controller
-            control={control}
-            name="lastName"
-            rules={{ required: "Last name is required" }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                placeholder="Last name"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-          />
-          {errors.lastName && <Text style={styles.error}>{errors.lastName.message}</Text>}
+        <Controller
+          control={control}
+          name="lastName"
+          rules={{ required: "Last name is required" }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder="Last name"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+        {errors.lastName && <Text style={styles.error}>{errors.lastName.message}</Text>}
 
-          <Controller
-            control={control}
-            name="emplid"
-            rules={{
-              required: "EMPLID is required",
-              pattern: { value: /^[0-9]+$/, message: "EMPLID must be numeric" },
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                placeholder="EMPLID"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                keyboardType="numeric"
-              />
-            )}
-          />
-          {errors.emplid && <Text style={styles.error}>{errors.emplid.message}</Text>}
+        <Controller
+          control={control}
+          name="emplid"
+          rules={{
+            required: "EMPLID is required",
+            pattern: { value: /^[0-9]+$/, message: "EMPLID must be numeric" },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder="EMPLID"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              keyboardType="numeric"
+            />
+          )}
+        />
+        {errors.emplid && <Text style={styles.error}>{errors.emplid.message}</Text>}
 
-          <Controller
-            control={control}
-            name="email"
-            rules={{
-              required: "Email is required",
-              pattern: {
-                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                message: "Invalid email format",
-              },
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={styles.input}
-                placeholder="Email"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-                autoCapitalize="none"
-                keyboardType="email-address"
-              />
-            )}
-          />
-          {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
-		  {error && <Text style={styles.error}>{error}</Text>}
-		  
+        <Controller
+          control={control}
+          name="email"
+          rules={{
+            required: "Email is required",
+            pattern: {
+              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+              message: "Invalid email format",
+            },
+          }}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={styles.input}
+              placeholder="Email"
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              autoCapitalize="none"
+              keyboardType="email-address"
+            />
+          )}
+        />
+        {errors.email && <Text style={styles.error}>{errors.email.message}</Text>}
+		    {error && <Text style={styles.error}>{error}</Text>}
 		  </>
 		  }
 
@@ -251,7 +250,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginBottom: 10,
     fontSize: 16,
-    color: "#333",
+    color: "#666",
   },
   error: {
     color: "red",

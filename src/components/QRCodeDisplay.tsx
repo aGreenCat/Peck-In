@@ -1,4 +1,4 @@
-import React from 'react';
+import { FC } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
@@ -8,7 +8,7 @@ type QRCodeDisplayProps = {
     size?: number;
 };
 
-const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({ 
+const QRCodeDisplay: FC<QRCodeDisplayProps> = ({ 
     eventId,
     eventName,
     size = 200
