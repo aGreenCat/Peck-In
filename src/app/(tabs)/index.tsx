@@ -4,8 +4,9 @@ import { renderPrevEvents } from '@/actions/renderEvents';
 import Event from '@/components/Event';
 import { userContext, UserContextType } from '@/contexts/userContext';
 import { Suspense, useContext } from 'react';
-import { ActivityIndicator, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Index() {
   const context = useContext<UserContextType>(userContext);

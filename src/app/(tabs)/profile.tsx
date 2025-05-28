@@ -9,14 +9,13 @@ import {
   ActivityIndicator,
   Button,
   KeyboardAvoidingView,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View
 } from "react-native";
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type ProfileFormData = {
 	firstName: string;

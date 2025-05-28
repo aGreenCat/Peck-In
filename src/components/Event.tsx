@@ -10,7 +10,7 @@ import AttendeesDisplay from './AttendeesDisplay';
 import QRCodeDisplay from './QRCodeDisplay';
 
 export type EventProps = {
-  id: number;	// for accessibility
+  id: string;
   name: string;
   description?: string;
   location?: string;
@@ -22,17 +22,17 @@ export type EventProps = {
 
 const Event: FC<EventProps> = ({ id, name, description, location, host, start_time, end_time, noqr=false }) => {
   const [showDetails, setShowDetails] = useState(false);
-
   const [showAttendees, setShowAttendees] = useState(false);
+
   const [attendees, setAttendees] = useState<User[]>([]);
 
   const fetchAttendees = async () => {
-	const raw_attendees = await getAttendees({EventID: id});
+	const raw_attendees = await getAttendees({event_id: id});
 	const attendees = raw_attendees?.map((attendee) => {
 	  return {
-		name: attendee.Name!,
-		emplid: attendee.EmplID!,
-		email: attendee.Email!,
+		name: attendee.name!,
+		emplid: attendee.emplid!,
+		email: attendee.email!,
 	  }
 	});
 	setAttendees(attendees!);
@@ -139,7 +139,3 @@ const styles = StyleSheet.create({
 });
 
 export default Event;
-
-function onEffect(arg0: () => void) {
-	throw new Error('Function not implemented.');
-}

@@ -3,8 +3,9 @@ import { storeAttendance } from '@/actions/databasing';
 import { userContext } from '@/contexts/userContext';
 import { useIsFocused } from '@react-navigation/native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import React, { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Scan() {
 	const isFocused = useIsFocused();
@@ -13,7 +14,7 @@ export default function Scan() {
 	const [scanned, setScanned] = useState(false);				// prevent multiple scans
 	const [permission, requestPermission] = useCameraPermissions();
 
-	const context = React.useContext(userContext);
+	const context = useContext(userContext);
 	const user = context?.user || null;
 
 	useEffect(() => {
@@ -24,58 +25,56 @@ export default function Scan() {
 	
 	if (!permission) {
 	return (
-		<View style={styles.permissionContainer}>
+		<SafeAreaView style={styles.permissionContainer}>
 			<Text>Requesting camera permission…</Text>
-		</View>
+		</SafeAreaView>
 	);
 	}
 
 	// if denied permissions
 	if (!permission.granted) {
 		return (
-		  <View style={styles.permissionContainer}>
+		  <SafeAreaView style={styles.permissionContainer}>
 			<Button title="Give Camera Permission" onPress={() => requestPermission()} />
-		  </View>
+		  </SafeAreaView>
 		);
 	}
 
 	// display confirmation page
 	if (scanned) {
 		return user ? (
-			<View style={styles.confirmationContainer}>
+			<SafeAreaView style={styles.confirmationContainer}>
 				<Text style={styles.confirmationTitle}>✅ Peck-In complete!</Text>
 				<Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />
-			</View>
+			</SafeAreaView>
 		) : (
-			<View style={styles.confirmationContainer}>
+			<SafeAreaView style={styles.confirmationContainer}>
 				<Text style={styles.confirmationTitle}>❌ Peck-In failed!</Text>
 				<Text style={styles.confirmationData}>Please log in to your account.</Text>
 				<Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />
-			</View>
+			</SafeAreaView>
 		);
 	}
 
 	return (
-	<View style={styles.container}>
+	<SafeAreaView style={styles.container}>
 		{isFocused && 
 		<CameraView
 			ref={cameraRef}
 			style={StyleSheet.absoluteFillObject}
 			onBarcodeScanned={({ data }) => {
-				const eventId = parseInt(data);
-				if (!isNaN(eventId)) {
-					if (!user) {
-						console.log("User not logged in. Cannot scan.");
+				if (!user) {
+					console.log("User not logged in. Cannot scan.");
 					}
 					else {
-						storeAttendance({EventID: Number(data), EmplID: user.emplid});
+						storeAttendance({event_id: data, student_id: user.emplid});
 					}
 
-					console.log("Scanned event ID:", eventId);
+					console.log("Scanned event ID:", data);
 					{/*Process check-in using the numeric ID*/}
 				  	setScanned(true);
 				}
-			}}	
+			}
 			barcodeScannerSettings={{
 				barcodeTypes: ['qr'],
 			}}
@@ -88,7 +87,7 @@ export default function Scan() {
 		<View style={styles.boxContainer}>
 			<View style={styles.scanBox} />
 		</View>
-	</View>
+	</SafeAreaView>
 	);
 }
 

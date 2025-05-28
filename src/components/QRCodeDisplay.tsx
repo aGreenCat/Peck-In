@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
 type QRCodeDisplayProps = {
-    eventId: number;
+    eventId: string;
     eventName: string;
     size?: number;
 };
@@ -17,7 +17,7 @@ const QRCodeDisplay: FC<QRCodeDisplayProps> = ({
     {/* for debuggin' */}
     // console.log('Received props:', { eventId, eventName });
 
-    const qrData = eventId.toString();
+    const qrData = eventId;
 
     return (
         <View style={styles.container}>

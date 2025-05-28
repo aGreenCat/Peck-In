@@ -54,55 +54,84 @@ export type Database = {
       }
       EventAttendance: {
         Row: {
-          EmplID: string
-          EventID: number
-          id: number
+          created_at: string
+          event_id: string
+          student_id: string
         }
         Insert: {
-          EmplID: string
-          EventID: number
-          id?: number
+          created_at?: string
+          event_id: string
+          student_id?: string
         }
         Update: {
-          EmplID?: string
-          EventID?: number
-          id?: number
+          created_at?: string
+          event_id?: string
+          student_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "EventAttendance_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "Events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "EventAttendance_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "Students"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       Events: {
         Row: {
-          EmplID: string | null
-          EventID: number
-          EventName: string | null
+          created_at: string
+          host: string
+          id: string
+          name: string
         }
         Insert: {
-          EmplID?: string | null
-          EventID?: number
-          EventName?: string | null
+          created_at?: string
+          host?: string
+          id?: string
+          name?: string
         }
         Update: {
-          EmplID?: string | null
-          EventID?: number
-          EventName?: string | null
+          created_at?: string
+          host?: string
+          id?: string
+          name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "Events_host_fkey"
+            columns: ["host"]
+            isOneToOne: false
+            referencedRelation: "Students"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       Students: {
         Row: {
-          Email: string | null
-          EmplID: string
-          Name: string | null
+          email: string
+          emplid: string | null
+          id: string
+          name: string
         }
         Insert: {
-          Email?: string | null
-          EmplID?: string
-          Name?: string | null
+          email: string
+          emplid?: string | null
+          id?: string
+          name: string
         }
         Update: {
-          Email?: string | null
-          EmplID?: string
-          Name?: string | null
+          email?: string
+          emplid?: string | null
+          id?: string
+          name?: string
         }
         Relationships: []
       }
