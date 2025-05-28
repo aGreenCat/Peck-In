@@ -1,7 +1,7 @@
 import { Database } from '@/actions/supabase';
 import { createClient } from '@supabase/supabase-js';
 
-const supabase = createClient<Database>(
+export const supabase = createClient<Database>(
   process.env.EXPO_PUBLIC_SUPABASE_URL as string, 
   process.env.EXPO_PUBLIC_SUPABASE_KEY as string
 );
@@ -36,8 +36,9 @@ export async function storeAttendance({ event_id, student_id }: { event_id: stri
   // Updated to match EventAttendance table schema: event_id (string) and student_id (string)
   const { error } = await supabase.from('EventAttendance').insert([{ event_id: event_id, student_id: student_id }]);
   if (error) {
-    console.log(error);
+    return { error: error };
   }
+    return {};
 }
 
 export async function getUserByEmail({ email }: { email: string }) {
@@ -53,9 +54,11 @@ export async function getUserById({ id }: { id: string }) {
 }
 
 export async function getEvent({ id }: { id: string }) {
-  // Updated to use correct field names: id (string) and name
-  const { data, error } = await supabase.from('Events').select('name').eq('id', id).single();
-  return data;
+  const { data, error } = await supabase.from('Events').select().eq('id', id).single();
+  if (error) {
+    return { error: error };
+  }
+  return { data: data };
 }
 
 export async function getEventsByHost({ id }: { id: string }) {
@@ -131,4 +134,23 @@ export async function getAttendees({ event_id }: { event_id: string }) {
     .in('id', studentIds);
 
   return students;
+}
+
+// Real-time subscription function for EventAttendance
+export function subscribeToEventAttendance(eventId: string, callback: (payload: any) => void) {
+  const subscription = supabase
+    .channel(`event-attendance-${eventId}`)
+    .on(
+      'postgres_changes',
+      {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'EventAttendance',
+        filter: `event_id=eq.${eventId}`
+      },
+      callback
+    )
+    .subscribe();
+
+  return subscription;
 }

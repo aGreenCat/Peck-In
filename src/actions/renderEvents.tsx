@@ -23,7 +23,7 @@ export async function renderEvents({ user }: { user: User }) {
             hour: '2-digit', 
             minute: '2-digit' 
           })}
-          host={user.name}
+          host={`${user.name} (you)`}
         />
       )
       : <View style={{ backgroundColor: '#60269e', padding: 16 }}>

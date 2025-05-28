@@ -13,7 +13,7 @@ const AttendeesDisplay: FC<AttendeesDisplayProps> = ({ attendees, visible, onClo
 		return (
 			<Modal
 				visible={visible}
-				animationType="slide"
+				animationType="fade"
 				transparent={true}
 				onRequestClose={onClose}
 			>

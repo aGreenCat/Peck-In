@@ -1,6 +1,6 @@
 'use client';
 
-import { getAttendees } from '@/actions/databasing';
+import { getAttendees, subscribeToEventAttendance } from '@/actions/databasing';
 import { User } from '@/contexts/userContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FC, useEffect, useState } from 'react';
@@ -40,9 +40,22 @@ const Event: FC<EventProps> = ({ id, name, description, location, checkedIn, hos
 
   useEffect(() => {
 	if (!noqr) {
+		// Initial fetch
 		fetchAttendees();
+		
+		// Set up real-time subscription
+		const subscription = subscribeToEventAttendance(id, (payload) => {
+			console.log('New attendance recorded:', payload);
+			// Refetch attendees when someone checks in
+			fetchAttendees();
+		});
+
+		// Cleanup subscription on unmount
+		return () => {
+			subscription.unsubscribe();
+		};
 	}
-  }, []);
+  }, [id, noqr]);
   
   return (
 	<>

@@ -1,5 +1,6 @@
 'use client';
-import { storeAttendance } from '@/actions/databasing';
+import { getEvent, storeAttendance } from '@/actions/databasing';
+import { Tables } from '@/actions/supabase';
 import { userContext } from '@/contexts/userContext';
 import { useIsFocused } from '@react-navigation/native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
@@ -10,9 +11,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function Scan() {
 	const isFocused = useIsFocused();
 	const cameraRef = useRef(null);
+	const isProcessingRef = useRef(false);  // Add ref to track processing state
 
 	const [scanned, setScanned] = useState(false);				// prevent multiple scans
 	const [permission, requestPermission] = useCameraPermissions();
+
+	const [event, setEvent] = useState<Tables<'Events'> | null>(null);
+	const [eventError, setEventError] = useState<string>('');
 
 	const context = useContext(userContext);
 	const user = context?.user || null;
@@ -42,18 +47,53 @@ export default function Scan() {
 
 	// display confirmation page
 	if (scanned) {
-		return user ? (
+		if (!user) {
+			return (
+				<SafeAreaView style={styles.confirmationContainer}>
+					<Text style={{...styles.confirmationTitle, color: 'red'}}>❌ Peck-In failed!</Text>
+					<Text style={styles.confirmationData}>Please log in to your account.</Text>
+					<Button title={'Tap to Scan Again'} onPress={() => {
+						setEvent(null);
+						setScanned(false);
+						isProcessingRef.current = false;
+					}} />
+				</SafeAreaView>
+			)
+		}
+		if (!event) {
+			return (
+				<SafeAreaView style={styles.confirmationContainer}>
+					<Text style={{...styles.confirmationTitle, color: 'red'}}>❌ Peck-In failed!</Text>
+					<Text style={styles.confirmationData}>{eventError}</Text>
+					<Button title={'Tap to Scan Again'} onPress={() => {
+						setEvent(null);
+						setScanned(false);
+						isProcessingRef.current = false;
+					}} />
+				</SafeAreaView>
+			)
+		}
+
+
+		return (
 			<SafeAreaView style={styles.confirmationContainer}>
 				<Text style={styles.confirmationTitle}>✅ Peck-In complete!</Text>
-				<Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />
+				<Text style={styles.confirmationData}>
+					You checked into {event.name} at {new Date().toLocaleString(undefined, { 
+						year: 'numeric', 
+						month: 'short', 
+						day: 'numeric', 
+						hour: '2-digit', 
+						minute: '2-digit' 
+					})}
+				</Text>
+				<Button title={'Tap to Scan Again'} onPress={() => {
+					setEvent(null);
+					setScanned(false);
+					isProcessingRef.current = false;
+				}} />
 			</SafeAreaView>
-		) : (
-			<SafeAreaView style={styles.confirmationContainer}>
-				<Text style={styles.confirmationTitle}>❌ Peck-In failed!</Text>
-				<Text style={styles.confirmationData}>Please log in to your account.</Text>
-				<Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />
-			</SafeAreaView>
-		);
+		)
 	}
 
 	return (
@@ -62,19 +102,37 @@ export default function Scan() {
 		<CameraView
 			ref={cameraRef}
 			style={StyleSheet.absoluteFillObject}
-			onBarcodeScanned={({ data }) => {
+			onBarcodeScanned={async ({ data }) => {
+				// Prevent multiple rapid scans
+				if (isProcessingRef.current) {
+					return;
+				}
+				isProcessingRef.current = true;
+				setScanned(true);
+
 				if (!user) {
-					console.log("User not logged in. Cannot scan.");
-					}
-					else {
-						storeAttendance({event_id: data, student_id: user.id});
+					setEventError("You must be logged in to scan.");
+				}
+				else {
+					console.log("Scanned event ID:", data);
+
+					const { data: eventData, error: eventError } = await getEvent({ id: data });
+
+					if (eventError) {
+						setEventError("We couldn't find that event.");
+						return;
 					}
 
-					console.log("Scanned event ID:", data);
-					{/*Process check-in using the numeric ID*/}
-				  	setScanned(true);
+					const { error } = await storeAttendance({event_id: data, student_id: user.id});
+
+					if (error) {
+						setEventError("You've already pecked in for this event.");
+					}
+					else {
+						setEvent(eventData);
+					}
 				}
-			}
+			}}
 			barcodeScannerSettings={{
 				barcodeTypes: ['qr'],
 			}}
