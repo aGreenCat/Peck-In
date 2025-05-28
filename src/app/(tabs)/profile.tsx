@@ -1,4 +1,4 @@
-import { storeUser } from '@/actions/databasing';
+import { getUser, storeUser } from '@/actions/databasing';
 import { renderEvents } from '@/actions/renderEvents';
 import EventForm from '@/components/EventForm';
 import { userContext, UserContextType } from '@/contexts/userContext';
@@ -20,7 +20,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 type ProfileFormData = {
 	firstName: string;
   	lastName: string;
-  	emplid: string;
+  	emplid?: string;
   	email: string;
 };
 
@@ -40,35 +40,74 @@ export default function Profile() {
 
   const onSubmit = async (data: ProfileFormData) => {
     console.log(data);
-	setLoading(true);
-	
-    let { error } = await storeUser({
-      name: (data.firstName + " " + data.lastName), 
-      emplid: data.emplid, 
-      email: data.email
-    });
+    setLoading(true);
+    
+    // First check if user already exists
+    const existingUser = await getUser({ email: data.email });
+    
+    if (existingUser) {
+      // User exists, check if data matches
+      const fullName = data.firstName + " " + data.lastName;
+      const dataMatches = existingUser.name === fullName && 
+        existingUser.emplid === (data.emplid || null);
+      
+      if (dataMatches) {
+        // Data matches, reuse existing user
+        console.log("User already exists with matching data, reusing...");
+        
+        await SecureStore.setItemAsync('name', fullName);
+        if (data.emplid) {
+          await SecureStore.setItemAsync('emplid', data.emplid);
+        }
+        await SecureStore.setItemAsync('email', data.email);
+        
+        setUser(existingUser);
+        setLoading(false);
+        setError(null);
+        return;
+      } else {
+        // Data doesn't match, show error
+        setError("A user with this email already exists but with different information");
+        setLoading(false);
+        return;
+      }
+    }
+    else {
+      // User doesn't exist, create new one
+      let { error } = await storeUser({
+        name: (data.firstName + " " + data.lastName), 
+        emplid: data.emplid, 
+        email: data.email
+      });
 
-	if (error) {
-	  console.error("Error storing user:", error);
-	  // TODO: Handle error (e.g., show a message to the user)
-	  setError(error as unknown as string);
-	  setLoading(false);
-	  return;
-	}
-	
-	await SecureStore.setItemAsync('name', data.firstName + " " + data.lastName);
-	await SecureStore.setItemAsync('emplid', data.emplid);
-	await SecureStore.setItemAsync('email', data.email);
-	console.log("User stored successfully");
+      if (error) {
+        console.error("Error storing user:", error);
+        setError(error as unknown as string);
+        setLoading(false);
+        return;
+      }
+      
+      // Use the freshly created user data without refetching
+      const userData = await getUser({ email: data.email });
 
-	setUser({
-		name: data.firstName + " " + data.lastName,
-		emplid: data.emplid,
-		email: data.email,
-	});
+      if (!userData) {
+        setError("Failed to retrieve user data after creation");
+        setLoading(false);
+        return;
+      }
 
-	setLoading(false);
-	setError(null);
+      await SecureStore.setItemAsync('name', data.firstName + " " + data.lastName);
+      if (data.emplid) {
+        await SecureStore.setItemAsync('emplid', data.emplid);
+      }
+      await SecureStore.setItemAsync('email', data.email);
+      console.log("User stored successfully");
+
+      setUser(userData);
+
+      setLoading(false);
+      setError(null);
+    }
   };
   
   return (
@@ -126,13 +165,12 @@ export default function Profile() {
           control={control}
           name="emplid"
           rules={{
-            required: "EMPLID is required",
             pattern: { value: /^[0-9]+$/, message: "EMPLID must be numeric" },
           }}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
               style={styles.input}
-              placeholder="EMPLID"
+              placeholder="EMPLID (optional)"
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
@@ -180,7 +218,7 @@ export default function Profile() {
 
 				setUser(null);
 
-				console.log("User deleted successfully");
+				console.log("User reset successfully");
 			}} />
 		  </View>
 		  :
@@ -213,7 +251,7 @@ export default function Profile() {
 							<ActivityIndicator />
 						</View>	
 					}>
-					{user && renderEvents({EmplID: user.emplid})}
+					{user && renderEvents({email: user.email})}
 				</Suspense>
 			</View>
 			</>

@@ -30,12 +30,13 @@ const Event: FC<EventProps> = ({ id, name, description, location, host, start_ti
 	const raw_attendees = await getAttendees({event_id: id});
 	const attendees = raw_attendees?.map((attendee) => {
 	  return {
-		name: attendee.name!,
-		emplid: attendee.emplid!,
-		email: attendee.email!,
+		id: attendee.id,
+		name: attendee.name,
+		emplid: attendee.emplid,
+		email: attendee.email,
 	  }
 	});
-	setAttendees(attendees!);
+	setAttendees(attendees || []);
   };
 
   useEffect(() => {

@@ -26,7 +26,7 @@ export default function Index() {
 				<Text style={styles.title}>Personal QR</Text>
 				<View style={{backgroundColor: 'white', padding: 20, borderRadius: 12}}>
 					<QRCode
-						value={user?.emplid.toString()}
+						value={user?.email}
 						size={200}
 						color="black"
 						backgroundColor="transparent"
@@ -54,10 +54,10 @@ export default function Index() {
 							<ActivityIndicator />
 						</View>	
 					}>
-					{user && renderPrevEvents({EmplID: user.emplid})}
+					{user && renderPrevEvents({email: user.email})}
 				</Suspense>
 				<Event
-					id={349}
+					id="349"
 					name="GWC Meeting"
 					location='Hunter East 706'
 					description='A meeting for members to chill and hang out.'

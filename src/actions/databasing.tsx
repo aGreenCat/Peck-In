@@ -6,12 +6,15 @@ const supabase = createClient<Database>(
   process.env.EXPO_PUBLIC_SUPABASE_KEY as string
 );
 
-export async function storeUser({ name, emplid, email }: { name: string, emplid: string, email: string }) {
-  const check = await getUser({ emplid: emplid });
+// Export the Students table row type for use as User type
+export type Students = Database['public']['Tables']['Students']['Row'];
+
+export async function storeUser({ name, emplid, email }: { name: string, emplid?: string, email: string }) {
+  const check = await getUser({ email: email });
+  
   if (check) {
     return {};
   } else {
-    // Updated to match Students table schema: name, emplid, email (all lowercase)
     const { error } = await supabase.from('Students').insert([{ name: name, emplid: emplid, email: email }]);
     if (error) {
       return { error: error };
@@ -37,9 +40,9 @@ export async function storeAttendance({ event_id, student_id }: { event_id: stri
   }
 }
 
-export async function getUser({ emplid }: { emplid: string }) {
-  // Updated to use lowercase field name
-  const { data, error } = await supabase.from('Students').select().eq('emplid', emplid).single();
+export async function getUser({ email }: { email: string }) {
+  // Updated to use email as the primary identifier
+  const { data, error } = await supabase.from('Students').select().eq('email', email).single();
   return data;
 }
 
@@ -49,19 +52,9 @@ export async function getEvent({ id }: { id: string }) {
   return data;
 }
 
-export async function getEventsByHost({ emplid }: { emplid: string }) {
-  // Updated to use correct field names and join properly
-  const { data } = await supabase
-    .from('Events')
-    .select()
-    .eq('host', emplid); // host field references Students.id, so we need to find the student first
-  return data;
-}
-
-// Alternative implementation that finds student by emplid first
-export async function getEventsByHostEmplid({ emplid }: { emplid: string }) {
-  // First get the student's id using their emplid
-  const student = await getUser({ emplid });
+export async function getEventsByHost({ email }: { email: string }) {
+  // First get the student's id using their email
+  const student = await getUser({ email });
   if (!student) return null;
   
   // Then get events hosted by that student
@@ -72,9 +65,9 @@ export async function getEventsByHostEmplid({ emplid }: { emplid: string }) {
   return data;
 }
 
-export async function getEventsAttended({ emplid }: { emplid: string }) {
-  // First get the student's id using their emplid
-  const student = await getUser({ emplid });
+export async function getEventsAttended({ email }: { email: string }) {
+  // First get the student's id using their email
+  const student = await getUser({ email });
   if (!student) return null;
 
   // Get event attendance records for this student

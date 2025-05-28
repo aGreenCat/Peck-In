@@ -67,7 +67,7 @@ export default function Scan() {
 					console.log("User not logged in. Cannot scan.");
 					}
 					else {
-						storeAttendance({event_id: data, student_id: user.emplid});
+						storeAttendance({event_id: data, student_id: user.id});
 					}
 
 					console.log("Scanned event ID:", data);

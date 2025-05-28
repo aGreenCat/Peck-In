@@ -28,8 +28,8 @@ const EventForm: FC<{ user : User}> = ({ user }) => {
 	setLoading(true);
 
 	let { error } = await storeEvent({
-	  EventName: data.name,
-	  EmplID: user!.emplid
+	  name: data.name,
+	  host: user.email
 	});
 
 	if (error)

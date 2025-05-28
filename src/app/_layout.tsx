@@ -13,8 +13,9 @@ export default function Layout() {
 		const emplid = await SecureStore.getItemAsync('emplid');
 		const email = await SecureStore.getItemAsync('email');
 
-		if (name && emplid && email) {
+		if (name && email) {
 		  setUser({
+			id: '', // This will be set properly when the user is stored in the database
 			name: name,
 			emplid: emplid,
 			email: email,
