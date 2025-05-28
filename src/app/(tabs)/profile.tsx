@@ -1,4 +1,4 @@
-import { getUser, storeUser } from '@/actions/databasing';
+import { getUserByEmail, storeUser } from '@/actions/databasing';
 import { renderEvents } from '@/actions/renderEvents';
 import EventForm from '@/components/EventForm';
 import { userContext, UserContextType } from '@/contexts/userContext';
@@ -43,23 +43,21 @@ export default function Profile() {
     setLoading(true);
     
     // First check if user already exists
-    const existingUser = await getUser({ email: data.email });
+    const existingUser = await getUserByEmail({ email: data.email });
     
     if (existingUser) {
       // User exists, check if data matches
       const fullName = data.firstName + " " + data.lastName;
-      const dataMatches = existingUser.name === fullName && 
-        existingUser.emplid === (data.emplid || null);
+      const dataMatches = existingUser.name === fullName 
+        && existingUser.emplid === data.emplid 
+        && existingUser.email === data.email;
       
       if (dataMatches) {
         // Data matches, reuse existing user
         console.log("User already exists with matching data, reusing...");
         
-        await SecureStore.setItemAsync('name', fullName);
-        if (data.emplid) {
-          await SecureStore.setItemAsync('emplid', data.emplid);
-        }
-        await SecureStore.setItemAsync('email', data.email);
+        // Store the entire user object as JSON
+        await SecureStore.setItemAsync('user', JSON.stringify(existingUser));
         
         setUser(existingUser);
         setLoading(false);
@@ -74,33 +72,30 @@ export default function Profile() {
     }
     else {
       // User doesn't exist, create new one
-      let { error } = await storeUser({
+      let result = await storeUser({
         name: (data.firstName + " " + data.lastName), 
         emplid: data.emplid, 
         email: data.email
       });
 
-      if (error) {
-        console.error("Error storing user:", error);
-        setError(error as unknown as string);
+      if (result.error) {
+        console.error("Error storing user:", result.error);
+        setError(result.error as unknown as string);
         setLoading(false);
         return;
       }
-      
-      // Use the freshly created user data without refetching
-      const userData = await getUser({ email: data.email });
+
+      // Use the newly created user data directly
+      const userData = result.newUser;
 
       if (!userData) {
-        setError("Failed to retrieve user data after creation");
+        setError("Failed to create user");
         setLoading(false);
         return;
       }
 
-      await SecureStore.setItemAsync('name', data.firstName + " " + data.lastName);
-      if (data.emplid) {
-        await SecureStore.setItemAsync('emplid', data.emplid);
-      }
-      await SecureStore.setItemAsync('email', data.email);
+      // Store the entire user object as JSON
+      await SecureStore.setItemAsync('user', JSON.stringify(userData));
       console.log("User stored successfully");
 
       setUser(userData);
@@ -212,9 +207,8 @@ export default function Profile() {
 		  <View style={styles.buttonContainer}>
 			<Button color='gray' title="Change User" onPress={async () => {
 
-				await SecureStore.deleteItemAsync('name');
-				await SecureStore.deleteItemAsync('emplid');
-				await SecureStore.deleteItemAsync('email');
+				// Remove the single user object instead of individual fields
+				await SecureStore.deleteItemAsync('user');
 
 				setUser(null);
 
@@ -251,7 +245,7 @@ export default function Profile() {
 							<ActivityIndicator />
 						</View>	
 					}>
-					{user && renderEvents({email: user.email})}
+					{user && renderEvents({ user })}
 				</Suspense>
 			</View>
 			</>

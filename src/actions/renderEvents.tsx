@@ -1,10 +1,11 @@
 'use server';
 import Event from '@/components/Event';
+import { User } from '@/contexts/userContext';
 import { Text, View } from 'react-native';
 import { getEventsAttended, getEventsByHost } from './databasing';
 
-export async function renderEvents({ email }: { email: string }) {
-  const events = await getEventsByHost({ email: email });
+export async function renderEvents({ user }: { user: User }) {
+  const events = await getEventsByHost({ id: user.id });
   
   return (
     <View>
@@ -13,6 +14,16 @@ export async function renderEvents({ email }: { email: string }) {
           key={event.id}
           id={event.id}
           name={event.name}
+          description={event.description}
+          location={event.location}
+          time={new Date(event.created_at).toLocaleString(undefined, { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          })}
+          host={user.name}
         />
       )
       : <View style={{ backgroundColor: '#60269e', padding: 16 }}>
@@ -23,8 +34,8 @@ export async function renderEvents({ email }: { email: string }) {
   );
 }
 
-export async function renderPrevEvents({ email }: { email: string }) {
-  const prev_events = await getEventsAttended({ email: email });
+export async function renderPrevEvents({ user }: { user: User }) {
+  const prev_events = await getEventsAttended({ id: user.id });
 
   return (
     <View>
@@ -33,6 +44,16 @@ export async function renderPrevEvents({ email }: { email: string }) {
           key={event.id}
           id={event.id}
           name={event.name}
+          description={event.description}
+          location={event.location}
+          time={new Date(event.created_at).toLocaleString(undefined, { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric', 
+            hour: '2-digit', 
+            minute: '2-digit' 
+          })}
+          host={event.host_name}
           noqr={true}
         />
       )

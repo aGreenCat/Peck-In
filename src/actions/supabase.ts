@@ -88,20 +88,26 @@ export type Database = {
       Events: {
         Row: {
           created_at: string
+          description: string | null
           host: string
           id: string
+          location: string | null
           name: string
         }
         Insert: {
           created_at?: string
+          description?: string | null
           host?: string
           id?: string
+          location?: string | null
           name?: string
         }
         Update: {
           created_at?: string
+          description?: string | null
           host?: string
           id?: string
+          location?: string | null
           name?: string
         }
         Relationships: [

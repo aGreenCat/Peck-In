@@ -10,22 +10,22 @@ const supabase = createClient<Database>(
 export type Students = Database['public']['Tables']['Students']['Row'];
 
 export async function storeUser({ name, emplid, email }: { name: string, emplid?: string, email: string }) {
-  const check = await getUser({ email: email });
+  // Check if user already exists by email
+  const { data: existingUser } = await supabase.from('Students').select().eq('email', email).single();
   
-  if (check) {
-    return {};
+  if (existingUser) {
+    return { existingUser };
   } else {
-    const { error } = await supabase.from('Students').insert([{ name: name, emplid: emplid, email: email }]);
+    const { data, error } = await supabase.from('Students').insert([{ name: name, emplid: emplid, email: email }]).select().single();
     if (error) {
       return { error: error };
     }
+    return { newUser: data };
   }
-  return {};
 }
 
-export async function storeEvent({ name, host }: { name: string, host: string }) {
-  // Updated to match Events table schema: name and host fields
-  const { error } = await supabase.from('Events').insert([{ name: name, host: host }]);
+export async function storeEvent({ name, host, description, location }: { name: string, host: string, description?: string, location?: string }) {
+  const { error } = await supabase.from('Events').insert([{ name, description, location, host }]);
   if (error) {
     return { error: error };
   }
@@ -40,9 +40,15 @@ export async function storeAttendance({ event_id, student_id }: { event_id: stri
   }
 }
 
-export async function getUser({ email }: { email: string }) {
-  // Updated to use email as the primary identifier
+export async function getUserByEmail({ email }: { email: string }) {
+  // Get user by email - needed for authentication/profile scenarios
   const { data, error } = await supabase.from('Students').select().eq('email', email).single();
+  return data;
+}
+
+export async function getUserById({ id }: { id: string }) {
+  // Get user by ID - more efficient than email lookup
+  const { data, error } = await supabase.from('Students').select().eq('id', id).single();
   return data;
 }
 
@@ -52,42 +58,56 @@ export async function getEvent({ id }: { id: string }) {
   return data;
 }
 
-export async function getEventsByHost({ email }: { email: string }) {
-  // First get the student's id using their email
-  const student = await getUser({ email });
-  if (!student) return null;
+export async function getEventsByHost({ id }: { id: string }) {
+  let student = await getUserById({ id });
+  
+  if (!student) return [];
   
   // Then get events hosted by that student
   const { data } = await supabase
     .from('Events')
     .select()
     .eq('host', student.id);
+
   return data;
 }
 
-export async function getEventsAttended({ email }: { email: string }) {
-  // First get the student's id using their email
-  const student = await getUser({ email });
-  if (!student) return null;
+export async function getEventsAttended({ id }: { id: string }) {
+  let student = await getUserById({ id });
+  
+  if (!student) return [];
 
-  // Get event attendance records for this student
-  const { data: attendanceData } = await supabase
+  // Get events attended by this student using a flattened join with aliases
+  const { data: events } = await supabase
     .from('EventAttendance')
-    .select('event_id')
+    .select(`
+      event_id,
+      Events!inner (
+        id,
+        name,
+        description,
+        location,
+        created_at,
+        host,
+        Students!host (
+          name
+        )
+      )
+    `)
     .eq('student_id', student.id);
 
-  if (!attendanceData || attendanceData.length === 0) return [];
+  // Flatten the structure manually
+  const flattenedEvents = events?.map(item => ({
+    id: item.Events.id,
+    name: item.Events.name,
+    description: item.Events.description,
+    location: item.Events.location,
+    created_at: item.Events.created_at,
+    host: item.Events.host,
+    host_name: item.Events.Students.name
+  }));
 
-  // Extract event IDs
-  const eventIds = attendanceData.map(record => record.event_id);
-
-  // Get the actual events
-  const { data: events } = await supabase
-    .from('Events')
-    .select()
-    .in('id', eventIds);
-
-  return events;
+  return flattenedEvents;
 }
 
 export async function getAttendees({ event_id }: { event_id: string }) {

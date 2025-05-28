@@ -12,15 +12,14 @@ import QRCodeDisplay from './QRCodeDisplay';
 export type EventProps = {
   id: string;
   name: string;
-  description?: string;
-  location?: string;
-  host?: string;
-  start_time?: Date;
-  end_time?: Date;
+  description: string | null;
+  location: string | null;
+  time: string | null;
+  host: string;
   noqr?: boolean; // if true, don't show QR code
 };
 
-const Event: FC<EventProps> = ({ id, name, description, location, host, start_time, end_time, noqr=false }) => {
+const Event: FC<EventProps> = ({ id, name, description, location, host, time, noqr=false }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showAttendees, setShowAttendees] = useState(false);
 
@@ -55,31 +54,14 @@ const Event: FC<EventProps> = ({ id, name, description, location, host, start_ti
 		</View>
 		{showDetails &&
 			<View style={{backgroundColor: '#D8C1F0', padding: 16}}>
-				{location && <Text>{location}</Text>}
+				<Text>{location && location}{location && time && ' • '}{time && time}</Text>
 				{host && <Text>Hosted By {host}</Text>}
-				{start_time && (
-					<Text>
-						{start_time.toLocaleString([], {
-						month: 'short',
-						day: 'numeric',
-						hour: '2-digit',
-						minute: '2-digit',
-						})}
-						{end_time && ` - ${end_time.toLocaleString([], {
-							month: 'short',
-							day: 'numeric',
-							hour: '2-digit',
-							minute: '2-digit',
-						})}`}
-					</Text>
-				)}
 
 				{description && 
 					<Text style={styles.dropdownText}>
 						{description}
 					</Text>
 				}
-
 
 				{!noqr && (
 					<>

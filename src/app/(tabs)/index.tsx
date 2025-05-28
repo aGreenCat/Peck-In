@@ -52,7 +52,7 @@ export default function Index() {
 							<ActivityIndicator />
 						</View>	
 					}>
-					{user && renderPrevEvents({email: user.email})}
+					{user && renderPrevEvents({ user })}
 				</Suspense>
 			</View>
 			</>
