@@ -1,11 +1,10 @@
 'use client';
 
+import { getAttendees } from '@/actions/databasing';
 import { User } from '@/contexts/userContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { FC, useEffect, useState } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-import { getAttendees } from '@/actions/databasing';
 import AttendeesDisplay from './AttendeesDisplay';
 import QRCodeDisplay from './QRCodeDisplay';
 
@@ -14,12 +13,13 @@ export type EventProps = {
   name: string;
   description: string | null;
   location: string | null;
+  checkedIn?: string | null;
   time: string | null;
   host: string;
   noqr?: boolean; // if true, don't show QR code
 };
 
-const Event: FC<EventProps> = ({ id, name, description, location, host, time, noqr=false }) => {
+const Event: FC<EventProps> = ({ id, name, description, location, checkedIn, host, time, noqr=false }) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showAttendees, setShowAttendees] = useState(false);
 
@@ -54,7 +54,13 @@ const Event: FC<EventProps> = ({ id, name, description, location, host, time, no
 		</View>
 		{showDetails &&
 			<View style={{backgroundColor: '#D8C1F0', padding: 16}}>
-				<Text>{location && location}{location && time && ' • '}{time && time}</Text>
+				<Text>{location && location}{location && (checkedIn || time) && ' • '}{checkedIn ? `Checked in: ${new Date(checkedIn).toLocaleString(undefined, { 
+					year: 'numeric', 
+					month: 'short', 
+					day: 'numeric', 
+					hour: '2-digit', 
+					minute: '2-digit' 
+				})}` : time}</Text>
 				{host && <Text>Hosted By {host}</Text>}
 
 				{description && 
@@ -65,12 +71,18 @@ const Event: FC<EventProps> = ({ id, name, description, location, host, time, no
 
 				{!noqr && (
 					<>
-						{showAttendees 
-						? <AttendeesDisplay attendees={attendees} />
-						: <QRCodeDisplay 
+						{showAttendees && 
+							<AttendeesDisplay 
+								attendees={attendees} 
+								visible={showAttendees} 
+								onClose={() => setShowAttendees(false)}
+							/>
+						}
+						
+						<QRCodeDisplay 
 							eventId={id} 
 							eventName={name} 
-						/>}
+						/>
 
 						<Button 
 							title="View Attendance"

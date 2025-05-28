@@ -46,6 +46,7 @@ export async function renderPrevEvents({ user }: { user: User }) {
           name={event.name}
           description={event.description}
           location={event.location}
+          checkedIn={event.checkedIn}
           time={new Date(event.created_at).toLocaleString(undefined, { 
             year: 'numeric', 
             month: 'short', 

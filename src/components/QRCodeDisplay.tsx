@@ -32,7 +32,12 @@ const QRCodeDisplay: FC<QRCodeDisplayProps> = ({
             {/* Display event ID for accessibility. Might delete if we don't get to manual check-in through ID */}
             <View style={styles.idContainer}>
                 <Text style={styles.idLabel}>Event ID:</Text>
-                <Text style={styles.idValue} selectable={true}>{eventId}</Text>
+                <Text 
+                    style={styles.idValue} 
+                    selectable
+                >
+                    {eventId}
+                </Text>
             </View>
 
             {/* Render event name */}
@@ -71,6 +76,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
         paddingHorizontal: 8,
         borderRadius: 4,
+        flexShrink: 1,
     },
     eventName: {
         marginTop: 8,

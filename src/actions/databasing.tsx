@@ -82,6 +82,7 @@ export async function getEventsAttended({ id }: { id: string }) {
     .from('EventAttendance')
     .select(`
       event_id,
+      created_at,
       Events!inner (
         id,
         name,
@@ -99,6 +100,7 @@ export async function getEventsAttended({ id }: { id: string }) {
   // Flatten the structure manually
   const flattenedEvents = events?.map(item => ({
     id: item.Events.id,
+    checkedIn: item.created_at,
     name: item.Events.name,
     description: item.Events.description,
     location: item.Events.location,
