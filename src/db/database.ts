@@ -1,13 +1,26 @@
-import { Database } from '@/db/supabase';
 import { createClient } from '@supabase/supabase-js';
+import { Database } from '../../database.types';
 
 export const supabase = createClient<Database>(
   process.env.EXPO_PUBLIC_SUPABASE_URL as string, 
   process.env.EXPO_PUBLIC_SUPABASE_KEY as string
 );
 
-// Export the Students table row type for use as User type
+// Export clean types for all database tables
 export type Students = Database['public']['Tables']['Students']['Row'];
+export type Events = Database['public']['Tables']['Events']['Row'];
+export type EventAttendance = Database['public']['Tables']['EventAttendance']['Row'];
+export type Clubs = Database['public']['Tables']['Clubs']['Row'];
+
+// Export insert and update types as well for convenience
+export type StudentsInsert = Database['public']['Tables']['Students']['Insert'];
+export type StudentsUpdate = Database['public']['Tables']['Students']['Update'];
+export type EventsInsert = Database['public']['Tables']['Events']['Insert'];
+export type EventsUpdate = Database['public']['Tables']['Events']['Update'];
+export type EventAttendanceInsert = Database['public']['Tables']['EventAttendance']['Insert'];
+export type EventAttendanceUpdate = Database['public']['Tables']['EventAttendance']['Update'];
+export type ClubsInsert = Database['public']['Tables']['Clubs']['Insert'];
+export type ClubsUpdate = Database['public']['Tables']['Clubs']['Update'];
 
 export async function storeUser({ name, emplid, email }: { name: string, emplid?: string, email: string }) {
   // Check if user already exists by email
@@ -43,13 +56,13 @@ export async function storeAttendance({ event_id, student_id }: { event_id: stri
 
 export async function getUserByEmail({ email }: { email: string }) {
   // Get user by email - needed for authentication/profile scenarios
-  const { data, error } = await supabase.from('Students').select().eq('email', email).single();
+  const { data } = await supabase.from('Students').select().eq('email', email).single();
   return data;
 }
 
 export async function getUserById({ id }: { id: string }) {
   // Get user by ID - more efficient than email lookup
-  const { data, error } = await supabase.from('Students').select().eq('id', id).single();
+  const { data } = await supabase.from('Students').select().eq('id', id).single();
   return data;
 }
 

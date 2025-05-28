@@ -53,7 +53,7 @@ const Event: FC<EventProps> = ({ id, name, description, location, checkedIn, hos
 			subscription.unsubscribe();
 		};
 	}
-  }, [id, noqr]);
+  }, []);
   
   return (
 	<>

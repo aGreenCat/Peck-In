@@ -1,6 +1,5 @@
 import { userContext } from '@/contexts/userContext';
-import { getEvent, storeAttendance } from '@/db/database';
-import { Tables } from '@/db/supabase';
+import { Events, getEvent, storeAttendance } from '@/db/database';
 import { useIsFocused } from '@react-navigation/native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useContext, useEffect, useRef, useState } from 'react';
@@ -15,7 +14,7 @@ export default function Scan() {
 	const [scanned, setScanned] = useState(false);				// prevent multiple scans
 	const [permission, requestPermission] = useCameraPermissions();
 
-	const [event, setEvent] = useState<Tables<'Events'> | null>(null);
+	const [event, setEvent] = useState<Events | null>(null);
 	const [eventError, setEventError] = useState<string>('');
 
 	const context = useContext(userContext);
